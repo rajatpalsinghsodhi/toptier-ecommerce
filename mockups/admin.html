@@ -206,6 +206,86 @@
         letter-spacing:0.08em;
       }
 
+      .tab-panel{display:none;}
+      .tab-panel.active{display:block;}
+
+      .panel-grid{
+        margin-top:14px;
+        display:grid;
+        grid-template-columns: 1fr;
+        gap:12px;
+      }
+
+      .actions-row{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        flex-wrap:wrap;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(242,238,231,0.02);
+      }
+
+      .search{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        flex: 1;
+        min-width: min(520px, 100%);
+      }
+
+      .search input{
+        flex:1;
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid var(--line2);
+        background: rgba(5,5,5,0.55);
+        color: var(--bone);
+        outline: none;
+        letter-spacing:0.08em;
+        font-size:12px;
+        font-weight:700;
+      }
+
+      .search input::placeholder{color: rgba(242,238,231,0.35);}
+
+      .btn{
+        height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--line2);
+        background: rgba(16,16,16,0.72);
+        color: rgba(242,238,231,0.8);
+        font-size:10px;
+        font-weight:700;
+        letter-spacing:0.22em;
+        text-transform:uppercase;
+        transition: border-color .18s, background .18s, color .18s;
+        white-space:nowrap;
+      }
+      .btn:hover{border-color: var(--bone); color: var(--bone); background: rgba(16,16,16,0.86);}
+      .btn.red{border-color: rgba(239,20,20,0.45); background: rgba(239,20,20,0.12); color: var(--bone);}
+      .btn.red:hover{border-color: var(--red); background: rgba(239,20,20,0.18);}
+
+      .field{
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line2);
+        background: rgba(5,5,5,0.55);
+        color: var(--bone);
+        outline:none;
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:0.06em;
+      }
+
+      .mini{
+        font-size:10px;
+        letter-spacing:0.16em;
+        text-transform:uppercase;
+        color: rgba(242,238,231,0.55);
+      }
+
       .kpis{
         margin-top:22px;
         display:grid;
@@ -477,40 +557,127 @@
       </aside>
 
       <main class="main">
-        <div class="page-title">Dashboard</div>
-        <div class="page-subtitle">Overview of your store performance</div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="page-subtitle" id="pageSubtitle">Overview of your store performance</div>
 
-        <section class="kpis" aria-label="Key metrics">
-          <div class="kpi">
-            <div class="kpi-label">Total revenue</div>
-            <div class="kpi-value">$12,450.78</div>
-            <div class="kpi-delta">+15.2% from last month</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Orders</div>
-            <div class="kpi-value">84</div>
-            <div class="kpi-delta">+8.5% from last month</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Low stock alerts</div>
-            <div class="kpi-value">0</div>
-            <div class="kpi-delta" style="color:rgba(242,238,231,0.55)">Items need restock</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Pre-orders</div>
-            <div class="kpi-value">1</div>
-            <div class="kpi-delta" style="color:rgba(242,238,231,0.55)">Across 6 products</div>
+        <!-- Overview -->
+        <section class="tab-panel active" id="tab-overview" aria-label="Overview">
+          <section class="kpis" aria-label="Key metrics">
+            <div class="kpi">
+              <div class="kpi-label">Total revenue</div>
+              <div class="kpi-value">$12,450.78</div>
+              <div class="kpi-delta">+15.2% from last month</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Orders</div>
+              <div class="kpi-value">84</div>
+              <div class="kpi-delta">+8.5% from last month</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Low stock alerts</div>
+              <div class="kpi-value">0</div>
+              <div class="kpi-delta" style="color:rgba(242,238,231,0.55)">Items need restock</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Pre-orders</div>
+              <div class="kpi-value">1</div>
+              <div class="kpi-delta" style="color:rgba(242,238,231,0.55)">Across 6 products</div>
+            </div>
+          </section>
+
+          <section class="grid">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Recent orders</div>
+                <a class="panel-link" href="#" onclick="setActiveTab('orders'); return false;">View all →</a>
+              </div>
+              <div style="overflow:auto">
+                <table aria-label="Recent orders">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Customer</th>
+                      <th>Date</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentOrdersBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Top products</div>
+                <a class="panel-link" href="#" onclick="setActiveTab('products'); return false;">This month</a>
+              </div>
+              <div class="top-products" id="topProductsList"></div>
+            </div>
+          </section>
+        </section>
+
+        <!-- Products -->
+        <section class="tab-panel" id="tab-products" aria-label="Products">
+          <div class="panel">
+            <div class="actions-row">
+              <div class="search">
+                <input id="productSearch" type="search" placeholder="Search products (name / category)" />
+              </div>
+              <button class="btn red" type="button" onclick="toast('New product (demo)')">Add product</button>
+            </div>
+            <div style="overflow:auto">
+              <table aria-label="Products table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Visibility</th>
+                  </tr>
+                </thead>
+                <tbody id="productsBody"></tbody>
+              </table>
+            </div>
           </div>
         </section>
 
-        <section class="grid">
+        <!-- Inventory -->
+        <section class="tab-panel" id="tab-inventory" aria-label="Inventory">
           <div class="panel">
-            <div class="panel-head">
-              <div class="panel-title">Recent orders</div>
-              <a class="panel-link" href="#" onclick="return false;">View all →</a>
+            <div class="actions-row">
+              <div class="mini">Edit stock counts (demo)</div>
+              <button class="btn" type="button" onclick="toast('Inventory saved ✓')">Save</button>
             </div>
             <div style="overflow:auto">
-              <table aria-label="Recent orders">
+              <table aria-label="Inventory table">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product</th>
+                    <th>On hand</th>
+                    <th>Reserved</th>
+                    <th>Available</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Orders -->
+        <section class="tab-panel" id="tab-orders" aria-label="Orders">
+          <div class="panel">
+            <div class="actions-row">
+              <div class="search">
+                <input id="orderSearch" type="search" placeholder="Search orders (order # / customer)" />
+              </div>
+              <button class="btn" type="button" onclick="toast('Export CSV (demo)')">Export</button>
+            </div>
+            <div style="overflow:auto">
+              <table aria-label="Orders table">
                 <thead>
                   <tr>
                     <th>Order #</th>
@@ -518,104 +685,326 @@
                     <th>Date</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td><strong style="letter-spacing:0.1em">ORD-5102</strong></td>
-                    <td>Jane Cooper</td>
-                    <td>Apr 28, 2026</td>
-                    <td>$215.50</td>
-                    <td><span class="status s-fulfilled">fulfilled</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong style="letter-spacing:0.1em">ORD-5101</strong></td>
-                    <td>Robert Fox</td>
-                    <td>Apr 27, 2026</td>
-                    <td>$89.00</td>
-                    <td><span class="status s-pending">pending</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong style="letter-spacing:0.1em">ORD-5100</strong></td>
-                    <td>Wade Warren</td>
-                    <td>Apr 27, 2026</td>
-                    <td>$180.00</td>
-                    <td><span class="status s-preorder">pre-order</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong style="letter-spacing:0.1em">ORD-5099</strong></td>
-                    <td>Esther Howard</td>
-                    <td>Apr 26, 2026</td>
-                    <td>$45.00</td>
-                    <td><span class="status s-fulfilled">fulfilled</span></td>
-                  </tr>
-                </tbody>
+                <tbody id="ordersBody"></tbody>
               </table>
             </div>
           </div>
+        </section>
 
-          <div class="panel">
-            <div class="panel-head">
-              <div class="panel-title">Top products</div>
-              <a class="panel-link" href="#" onclick="return false;">This month</a>
+        <!-- Pre-orders -->
+        <section class="tab-panel" id="tab-preorders" aria-label="Pre-orders">
+          <div class="panel-grid">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Pre-order queue</div>
+                <span class="panel-link" style="cursor:default">Drop 001</span>
+              </div>
+              <div style="overflow:auto">
+                <table aria-label="Preorders table">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Product</th>
+                      <th>Size</th>
+                      <th>Units</th>
+                      <th>ETA</th>
+                    </tr>
+                  </thead>
+                  <tbody id="preordersBody"></tbody>
+                </table>
+              </div>
             </div>
-            <div class="top-products">
-              <div class="tp-item">
-                <div class="tp-thumb">?</div>
-                <div>
-                  <div class="tp-name">Strength Within Tee</div>
-                  <div class="tp-meta">45 sold</div>
-                </div>
-                <div class="tp-right">45</div>
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Rules</div>
+                <span class="panel-link" style="cursor:default">Demo</span>
               </div>
-              <div class="tp-item">
-                <div class="tp-thumb">?</div>
-                <div>
-                  <div class="tp-name">Script Storm Denim</div>
-                  <div class="tp-meta">32 sold</div>
-                </div>
-                <div class="tp-right">32</div>
-              </div>
-              <div class="tp-item">
-                <div class="tp-thumb">?</div>
-                <div>
-                  <div class="tp-name">Classic Hoodie</div>
-                  <div class="tp-meta">28 sold</div>
-                </div>
-                <div class="tp-right">28</div>
-              </div>
-              <div class="tp-item">
-                <div class="tp-thumb">?</div>
-                <div>
-                  <div class="tp-name">Minimal Windbreaker</div>
-                  <div class="tp-meta">15 sold</div>
-                </div>
-                <div class="tp-right">15</div>
+              <div class="empty-note">
+                When pre-orders exceed available inventory, this queue shows ETA and allocation. Next step would be connecting to a real fulfillment system.
               </div>
             </div>
           </div>
         </section>
 
-        <section class="panel" style="margin-top:12px">
-          <div class="panel-head">
-            <div class="panel-title">Admin notes</div>
-            <span class="panel-link" style="cursor:default">Prototype mode</span>
-          </div>
-          <div class="empty-note">
-            This is a static admin dashboard for client presentation. Next steps would be wiring inventory, product edits, and order state changes to a backend.
+        <!-- Settings -->
+        <section class="tab-panel" id="tab-settings" aria-label="Settings">
+          <div class="panel-grid">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Store settings</div>
+                <span class="panel-link" style="cursor:default">Prototype</span>
+              </div>
+              <div class="empty-note">
+                <div style="display:grid;gap:12px;max-width:720px">
+                  <div style="display:grid;gap:6px">
+                    <div class="mini">Store name</div>
+                    <input class="field" value="Top Tier" />
+                  </div>
+                  <div style="display:grid;gap:6px">
+                    <div class="mini">Support email</div>
+                    <input class="field" value="support@toptier.example" />
+                  </div>
+                  <div style="display:grid;gap:6px">
+                    <div class="mini">Default currency</div>
+                    <input class="field" value="CAD" />
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button class="btn red" type="button" onclick="toast('Settings saved ✓')">Save</button>
+                    <a class="btn" href="top-tier-vibe.html">Back to store</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Admin notes</div>
+                <span class="panel-link" style="cursor:default">Prototype mode</span>
+              </div>
+              <div class="empty-note">
+                This admin dashboard is client-side only. Next step would be wiring inventory, product edits, and order state changes to a backend.
+              </div>
+            </div>
           </div>
         </section>
       </main>
     </div>
 
     <script>
-      // Simple tab highlight (visual only in this prototype)
-      document.querySelectorAll(".nav-item[data-tab]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-        });
+      const $ = (s, el = document) => el.querySelector(s);
+      const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+
+      const pageTitle = $("#pageTitle");
+      const pageSubtitle = $("#pageSubtitle");
+
+      const tabs = {
+        overview: { title: "Dashboard", subtitle: "Overview of your store performance" },
+        products: { title: "Products", subtitle: "Manage listings, pricing, and visibility" },
+        inventory: { title: "Inventory", subtitle: "Adjust stock levels and availability" },
+        orders: { title: "Orders", subtitle: "Track fulfillment and update statuses" },
+        preorders: { title: "Pre-orders", subtitle: "Monitor queued demand and ETAs" },
+        settings: { title: "Settings", subtitle: "Store configuration and admin notes" },
+      };
+
+      function toast(msg) {
+        // Minimal toast without adding new layout; uses alert-style timing.
+        const node = document.createElement("div");
+        node.style.position = "fixed";
+        node.style.right = "18px";
+        node.style.bottom = "18px";
+        node.style.zIndex = "400";
+        node.style.background = "rgba(16,16,16,0.92)";
+        node.style.border = "1px solid rgba(242,238,231,0.18)";
+        node.style.padding = "14px 16px";
+        node.style.color = "rgba(242,238,231,0.85)";
+        node.style.font = "700 10px/1 Rajdhani, system-ui, sans-serif";
+        node.style.letterSpacing = "0.22em";
+        node.style.textTransform = "uppercase";
+        node.style.backdropFilter = "blur(12px)";
+        node.textContent = msg;
+        document.body.appendChild(node);
+        setTimeout(() => node.remove(), 2000);
+      }
+
+      function setActiveTab(key) {
+        $$(".nav-item[data-tab]").forEach(b => b.classList.toggle("active", b.dataset.tab === key));
+        $$(".tab-panel").forEach(p => p.classList.toggle("active", p.id === `tab-${key}`));
+        const t = tabs[key] || tabs.overview;
+        pageTitle.textContent = t.title;
+        pageSubtitle.textContent = t.subtitle;
+      }
+
+      // Demo data
+      const products = [
+        { id: "strength-tee", name: "Strength Within Tee", category: "Tees", price: 48, stock: 34, visible: true },
+        { id: "no-perfect-tee", name: "No Perfect People", category: "Tees", price: 52, stock: 28, visible: true },
+        { id: "thorn-tee", name: "Crown of Thorns Tee", category: "Tees", price: 58, stock: 19, visible: true },
+        { id: "script-denim", name: "Script Storm Denim", category: "Bottoms", price: 118, stock: 12, visible: true },
+        { id: "red-flame-bottoms", name: "Red Flame Bottoms", category: "Bottoms", price: 88, stock: 9, visible: true },
+        { id: "leather-varsity", name: "Leather Varsity Jacket", category: "Jackets", price: 188, stock: 6, visible: true },
+        { id: "red-guard-jacket", name: "Red Guard Jacket", category: "Jackets", price: 162, stock: 7, visible: true },
+        { id: "gold-dragon-cap", name: "Gold Dragon Cap", category: "Caps", price: 46, stock: 18, visible: true },
+        { id: "red-chaos-cap", name: "Red Chaos Cap", category: "Caps", price: 42, stock: 21, visible: true },
+        { id: "ascension-shirt", name: "Ascension Camp Shirt", category: "Shirts", price: 96, stock: 11, visible: true },
+      ];
+
+      const orders = [
+        { id: "ORD-5102", customer: "Jane Cooper", date: "Apr 28, 2026", total: 215.50, status: "fulfilled" },
+        { id: "ORD-5101", customer: "Robert Fox", date: "Apr 27, 2026", total: 89.00, status: "pending" },
+        { id: "ORD-5100", customer: "Wade Warren", date: "Apr 27, 2026", total: 180.00, status: "pre-order" },
+        { id: "ORD-5099", customer: "Esther Howard", date: "Apr 26, 2026", total: 45.00, status: "fulfilled" },
+        { id: "ORD-5098", customer: "Savannah Nguyen", date: "Apr 25, 2026", total: 128.00, status: "pending" },
+      ];
+
+      const preorders = [
+        { id: "ORD-5100", product: "Strength Within Tee", size: "L", units: 1, eta: "May 12" },
+      ];
+
+      const money = new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" });
+
+      function statusClass(status) {
+        if (status === "fulfilled") return "s-fulfilled";
+        if (status === "pending") return "s-pending";
+        return "s-preorder";
+      }
+
+      function renderOverview() {
+        const recent = $("#recentOrdersBody");
+        const top = $("#topProductsList");
+        if (recent) {
+          recent.innerHTML = orders.slice(0, 4).map(o => `
+            <tr>
+              <td><strong style="letter-spacing:0.1em">${o.id}</strong></td>
+              <td>${o.customer}</td>
+              <td>${o.date}</td>
+              <td>${money.format(o.total)}</td>
+              <td><span class="status ${statusClass(o.status)}">${o.status}</span></td>
+            </tr>
+          `).join("");
+        }
+        if (top) {
+          const topProducts = [
+            { name: "Strength Within Tee", sold: 45 },
+            { name: "Script Storm Denim", sold: 32 },
+            { name: "Classic Hoodie", sold: 28 },
+            { name: "Minimal Windbreaker", sold: 15 },
+          ];
+          top.innerHTML = topProducts.map(p => `
+            <div class="tp-item">
+              <div class="tp-thumb">?</div>
+              <div>
+                <div class="tp-name">${p.name}</div>
+                <div class="tp-meta">${p.sold} sold</div>
+              </div>
+              <div class="tp-right">${p.sold}</div>
+            </div>
+          `).join("");
+        }
+      }
+
+      function renderProducts(filter = "") {
+        const body = $("#productsBody");
+        if (!body) return;
+        const q = filter.trim().toLowerCase();
+        const rows = products
+          .filter(p => !q || `${p.name} ${p.category}`.toLowerCase().includes(q))
+          .map(p => `
+            <tr data-prod-row="${p.id}">
+              <td><strong style="letter-spacing:0.1em">${p.name}</strong><div class="mini" style="margin-top:4px">${p.id}</div></td>
+              <td>${p.category}</td>
+              <td>${money.format(p.price)}</td>
+              <td><input class="field" style="width:86px" type="number" min="0" value="${p.stock}" data-stock="${p.id}" /></td>
+              <td>
+                <button class="btn" type="button" data-vis="${p.id}">${p.visible ? "Visible" : "Hidden"}</button>
+              </td>
+            </tr>
+          `);
+        body.innerHTML = rows.join("");
+      }
+
+      function renderInventory() {
+        const body = $("#inventoryBody");
+        if (!body) return;
+        body.innerHTML = products.slice(0, 8).map(p => {
+          const reserved = Math.max(0, Math.round(p.stock * 0.12));
+          const available = Math.max(0, p.stock - reserved);
+          return `
+            <tr>
+              <td><strong style="letter-spacing:0.1em">${p.id.toUpperCase()}</strong></td>
+              <td>${p.name}</td>
+              <td><input class="field" style="width:86px" type="number" min="0" value="${p.stock}" data-stock="${p.id}" /></td>
+              <td>${reserved}</td>
+              <td><strong>${available}</strong></td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function renderOrders(filter = "") {
+        const body = $("#ordersBody");
+        if (!body) return;
+        const q = filter.trim().toLowerCase();
+        body.innerHTML = orders
+          .filter(o => !q || `${o.id} ${o.customer}`.toLowerCase().includes(q))
+          .map(o => `
+            <tr data-order-row="${o.id}">
+              <td><strong style="letter-spacing:0.1em">${o.id}</strong></td>
+              <td>${o.customer}</td>
+              <td>${o.date}</td>
+              <td>${money.format(o.total)}</td>
+              <td>
+                <span class="status ${statusClass(o.status)}" data-status-pill="${o.id}">${o.status}</span>
+              </td>
+              <td>
+                <select class="field" data-status-select="${o.id}" style="height:34px">
+                  <option ${o.status === "pending" ? "selected" : ""}>pending</option>
+                  <option ${o.status === "pre-order" ? "selected" : ""}>pre-order</option>
+                  <option ${o.status === "fulfilled" ? "selected" : ""}>fulfilled</option>
+                </select>
+              </td>
+            </tr>
+          `).join("");
+      }
+
+      function renderPreorders() {
+        const body = $("#preordersBody");
+        if (!body) return;
+        body.innerHTML = preorders.map(p => `
+          <tr>
+            <td><strong style="letter-spacing:0.1em">${p.id}</strong></td>
+            <td>${p.product}</td>
+            <td>${p.size}</td>
+            <td>${p.units}</td>
+            <td>${p.eta}</td>
+          </tr>
+        `).join("");
+      }
+
+      // Wire nav buttons to real panels
+      $$(".nav-item[data-tab]").forEach(btn => btn.addEventListener("click", () => setActiveTab(btn.dataset.tab)));
+      window.setActiveTab = setActiveTab;
+
+      // Search handlers
+      $("#productSearch")?.addEventListener("input", (e) => renderProducts(e.target.value));
+      $("#orderSearch")?.addEventListener("input", (e) => renderOrders(e.target.value));
+
+      // Delegate toggles & selects
+      document.addEventListener("click", (e) => {
+        const vis = e.target.closest("[data-vis]");
+        if (vis) {
+          const id = vis.dataset.vis;
+          const p = products.find(x => x.id === id);
+          if (!p) return;
+          p.visible = !p.visible;
+          vis.textContent = p.visible ? "Visible" : "Hidden";
+          toast(`${p.visible ? "Shown" : "Hidden"} ✓`);
+        }
       });
+
+      document.addEventListener("change", (e) => {
+        const sel = e.target.closest("[data-status-select]");
+        if (!sel) return;
+        const id = sel.dataset.statusSelect;
+        const order = orders.find(o => o.id === id);
+        if (!order) return;
+        order.status = sel.value;
+        const pill = document.querySelector(`[data-status-pill="${id}"]`);
+        if (pill) {
+          pill.className = `status ${statusClass(order.status)}`;
+          pill.textContent = order.status;
+        }
+        toast("Status updated ✓");
+      });
+
+      // Initial render
+      renderOverview();
+      renderProducts();
+      renderInventory();
+      renderOrders();
+      renderPreorders();
+      setActiveTab("overview");
     </script>
   </body>
 </html>
