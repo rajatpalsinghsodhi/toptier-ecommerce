@@ -427,6 +427,46 @@
         color: rgba(242,238,231,0.4);
         font-weight:900;
         border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .tp-thumb img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        display:block;
+        filter: saturate(0.95) contrast(1.05) brightness(0.85);
+        transition: transform .35s ease, filter .35s ease;
+      }
+
+      .tp-item:hover .tp-thumb img{
+        transform: scale(1.06);
+        filter: saturate(1) contrast(1.1) brightness(0.95);
+      }
+
+      .pt-cell{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        min-width: 240px;
+      }
+
+      .pt-thumb{
+        width:44px;
+        height:44px;
+        border-radius:10px;
+        border:1px solid var(--line);
+        background: var(--ash3);
+        overflow:hidden;
+        flex: 0 0 auto;
+      }
+
+      .pt-thumb img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        display:block;
+        filter: saturate(0.95) contrast(1.05) brightness(0.85);
       }
       .tp-name{
         font-size:12px;
@@ -818,16 +858,16 @@
 
       // Demo data
       const products = [
-        { id: "strength-tee", name: "Strength Within Tee", category: "Tees", price: 48, stock: 34, visible: true },
-        { id: "no-perfect-tee", name: "No Perfect People", category: "Tees", price: 52, stock: 28, visible: true },
-        { id: "thorn-tee", name: "Crown of Thorns Tee", category: "Tees", price: 58, stock: 19, visible: true },
-        { id: "script-denim", name: "Script Storm Denim", category: "Bottoms", price: 118, stock: 12, visible: true },
-        { id: "red-flame-bottoms", name: "Red Flame Bottoms", category: "Bottoms", price: 88, stock: 9, visible: true },
-        { id: "leather-varsity", name: "Leather Varsity Jacket", category: "Jackets", price: 188, stock: 6, visible: true },
-        { id: "red-guard-jacket", name: "Red Guard Jacket", category: "Jackets", price: 162, stock: 7, visible: true },
-        { id: "gold-dragon-cap", name: "Gold Dragon Cap", category: "Caps", price: 46, stock: 18, visible: true },
-        { id: "red-chaos-cap", name: "Red Chaos Cap", category: "Caps", price: 42, stock: 21, visible: true },
-        { id: "ascension-shirt", name: "Ascension Camp Shirt", category: "Shirts", price: 96, stock: 11, visible: true },
+        { id: "strength-tee", name: "Strength Within Tee", category: "Tees", price: 48, stock: 34, visible: true, image: "vibe-assets/strength-tee.png" },
+        { id: "no-perfect-tee", name: "No Perfect People", category: "Tees", price: 52, stock: 28, visible: true, image: "vibe-assets/no-perfect-tee.png" },
+        { id: "thorn-tee", name: "Crown of Thorns Tee", category: "Tees", price: 58, stock: 19, visible: true, image: "vibe-assets/thorn-tee.png" },
+        { id: "script-denim", name: "Script Storm Denim", category: "Bottoms", price: 118, stock: 12, visible: true, image: "vibe-assets/bottoms-script-denim.png" },
+        { id: "red-flame-bottoms", name: "Red Flame Bottoms", category: "Bottoms", price: 88, stock: 9, visible: true, image: "vibe-assets/bottoms-red-flame.png" },
+        { id: "leather-varsity", name: "Leather Varsity Jacket", category: "Jackets", price: 188, stock: 6, visible: true, image: "vibe-assets/jacket-leather-varsity.png" },
+        { id: "red-guard-jacket", name: "Red Guard Jacket", category: "Jackets", price: 162, stock: 7, visible: true, image: "vibe-assets/jacket-red-guard.png" },
+        { id: "gold-dragon-cap", name: "Gold Dragon Cap", category: "Caps", price: 46, stock: 18, visible: true, image: "vibe-assets/cap-dragon.png" },
+        { id: "red-chaos-cap", name: "Red Chaos Cap", category: "Caps", price: 42, stock: 21, visible: true, image: "vibe-assets/cap-red-chaos.png" },
+        { id: "ascension-shirt", name: "Ascension Camp Shirt", category: "Shirts", price: 96, stock: 11, visible: true, image: "vibe-assets/shirt-ascension.png" },
       ];
 
       const orders = [
@@ -866,14 +906,14 @@
         }
         if (top) {
           const topProducts = [
-            { name: "Strength Within Tee", sold: 45 },
-            { name: "Script Storm Denim", sold: 32 },
-            { name: "Classic Hoodie", sold: 28 },
-            { name: "Minimal Windbreaker", sold: 15 },
+            { name: "Strength Within Tee", sold: 45, image: "vibe-assets/strength-tee.png" },
+            { name: "Script Storm Denim", sold: 32, image: "vibe-assets/bottoms-script-denim.png" },
+            { name: "Leather Varsity Jacket", sold: 28, image: "vibe-assets/jacket-leather-varsity.png" },
+            { name: "Gold Dragon Cap", sold: 15, image: "vibe-assets/cap-dragon.png" },
           ];
           top.innerHTML = topProducts.map(p => `
             <div class="tp-item">
-              <div class="tp-thumb">?</div>
+              <div class="tp-thumb"><img src="${p.image}" alt="${p.name}" loading="lazy" /></div>
               <div>
                 <div class="tp-name">${p.name}</div>
                 <div class="tp-meta">${p.sold} sold</div>
@@ -892,7 +932,15 @@
           .filter(p => !q || `${p.name} ${p.category}`.toLowerCase().includes(q))
           .map(p => `
             <tr data-prod-row="${p.id}">
-              <td><strong style="letter-spacing:0.1em">${p.name}</strong><div class="mini" style="margin-top:4px">${p.id}</div></td>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-thumb"><img src="${p.image}" alt="${p.name}" loading="lazy" /></div>
+                  <div>
+                    <strong style="letter-spacing:0.1em">${p.name}</strong>
+                    <div class="mini" style="margin-top:4px">${p.id}</div>
+                  </div>
+                </div>
+              </td>
               <td>${p.category}</td>
               <td>${money.format(p.price)}</td>
               <td><input class="field" style="width:86px" type="number" min="0" value="${p.stock}" data-stock="${p.id}" /></td>
