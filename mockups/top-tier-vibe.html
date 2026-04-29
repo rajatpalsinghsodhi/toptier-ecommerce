@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Pirata+One&family=Rajdhani:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Dancing+Script:wght@700&family=Instrument+Serif:ital@0;1&family=Pirata+One&family=Rajdhani:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -371,6 +371,131 @@
         font-size: 18px;
         line-height: 1.55;
         max-width: 520px;
+      }
+
+      /* ── Pre-order banner ── */
+      .preorder-section {
+        border: 1px solid rgba(242,238,231,0.10);
+        margin-bottom: 2px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 520px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .preorder-img {
+        position: relative; overflow: hidden;
+      }
+
+      .preorder-img img {
+        width: 100%; height: 100%; object-fit: cover;
+        display: block;
+        transition: transform .6s ease;
+      }
+
+      .preorder-section:hover .preorder-img img { transform: scale(1.04); }
+
+      .preorder-body {
+        background: #0c0c0c;
+        padding: 52px 52px 48px;
+        display: flex; flex-direction: column; justify-content: center; gap: 0;
+      }
+
+      .preorder-eyebrow {
+        font-size: 10px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+        color: rgba(239,20,20,0.9);
+        margin-bottom: 18px;
+        display: flex; align-items: center; gap: 10px;
+      }
+
+      .preorder-eyebrow::before {
+        content: ""; width: 28px; height: 1px; background: var(--red, #ef1414);
+      }
+
+      .preorder-script {
+        font-family: "Dancing Script", "Brush Script MT", cursive;
+        font-size: clamp(22px, 2.4vw, 32px);
+        color: rgba(242,238,231,0.75);
+        font-weight: 400;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+
+      .preorder-title {
+        font-family: "Archivo Black", "Bebas Neue", Impact, sans-serif;
+        font-size: clamp(36px, 4.5vw, 64px);
+        letter-spacing: -0.04em; text-transform: uppercase;
+        line-height: 0.95;
+        color: #f2eee7;
+        margin-bottom: 22px;
+      }
+
+      .preorder-desc {
+        font-size: 15px; line-height: 1.65;
+        color: rgba(242,238,231,0.6);
+        max-width: 380px;
+        margin-bottom: 32px;
+      }
+
+      .preorder-cta {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 17px 36px;
+        background: transparent;
+        border: 1px solid #ef1414;
+        color: #ef1414;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase;
+        cursor: pointer;
+        transition: background .2s, color .2s;
+        max-width: 340px;
+        margin-bottom: 36px;
+      }
+
+      .preorder-cta:hover { background: #ef1414; color: #fff; }
+
+      .countdown {
+        display: flex; gap: 12px;
+      }
+
+      .cd-box {
+        background: #161616; border: 1px solid rgba(242,238,231,0.1);
+        padding: 14px 0; width: 72px; text-align: center;
+      }
+
+      .cd-num {
+        font-family: "Archivo Black", Impact, sans-serif;
+        font-size: 28px; letter-spacing: -0.04em; color: #f2eee7;
+        line-height: 1;
+      }
+
+      .cd-label {
+        font-size: 8px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase;
+        color: rgba(242,238,231,0.4); margin-top: 5px;
+      }
+
+      .units-bar {
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 24px;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+        color: rgba(242,238,231,0.45);
+      }
+
+      .units-track {
+        flex: 1; height: 2px; background: rgba(242,238,231,0.1); max-width: 200px;
+      }
+
+      .units-fill {
+        height: 100%; background: #ef1414;
+        width: 68%;
+        transition: width 1s ease;
+      }
+
+      @media (max-width: 768px) {
+        .preorder-section { grid-template-columns: 1fr; min-height: auto; }
+        .preorder-img { min-height: 280px; }
+        .preorder-body { padding: 36px 24px; }
+        .cd-box { width: 60px; padding: 12px 0; }
+        .cd-num { font-size: 24px; }
       }
 
       .products {
@@ -877,11 +1002,11 @@
 
       <section class="ticker" aria-label="Top Tier campaign ticker">
         <div class="ticker-track">
-          <span>All things through Christ</span>
+          <span>Built on belief</span>
           <span>No perfect people allowed</span>
           <span>Culture of ambition</span>
           <span>Never stop dreaming</span>
-          <span>All things through Christ</span>
+          <span>Built on belief</span>
           <span>No perfect people allowed</span>
           <span>Culture of ambition</span>
           <span>Never stop dreaming</span>
@@ -903,6 +1028,30 @@
             scripture-inspired and graphic-first. Tees, bottoms, jackets, and caps sit in the
             same visual language, so the store feels like a campaign page, not a Shopify default.
           </p>
+        </div>
+
+        <!-- Pre-order banner -->
+        <div class="preorder-section" id="preorder">
+          <div class="preorder-img">
+            <img src="vibe-assets/strength-tee.png" alt="Strength Within Tee" />
+          </div>
+          <div class="preorder-body">
+            <div class="preorder-eyebrow">Limited Drop &nbsp;·&nbsp; Only 50 Units</div>
+            <div class="preorder-script">the one you've been waiting for</div>
+            <div class="preorder-title">Strength<br />Within Tee</div>
+            <p class="preorder-desc">Heavyweight 380gsm cotton. Oversized silhouette. Faith-coded typography screen-printed in matte black. The first piece from Drop 001 — and it won't restock.</p>
+            <div class="units-bar">
+              <div class="units-track"><div class="units-fill" id="unitsFill"></div></div>
+              <span id="unitsLeft">34 of 50 remaining</span>
+            </div>
+            <button class="preorder-cta" onclick="handlePreorder()">Secure Yours — $48</button>
+            <div class="countdown" id="countdown">
+              <div class="cd-box"><div class="cd-num" id="cdDays">00</div><div class="cd-label">Days</div></div>
+              <div class="cd-box"><div class="cd-num" id="cdHrs">00</div><div class="cd-label">Hrs</div></div>
+              <div class="cd-box"><div class="cd-num" id="cdMin">00</div><div class="cd-label">Min</div></div>
+              <div class="cd-box"><div class="cd-num" id="cdSec">00</div><div class="cd-label">Sec</div></div>
+            </div>
+          </div>
         </div>
 
         <div class="products">
@@ -1606,6 +1755,71 @@
           window.location.href = link.href;
         });
       });
+
+      // ── Pre-order countdown (drop ends in 20 days from page load) ──
+      (function () {
+        const dropEnd = new Date(Date.now() + 20 * 24 * 60 * 60 * 1000);
+        const pad = n => String(n).padStart(2, "0");
+
+        function tick() {
+          const diff = dropEnd - Date.now();
+          if (diff <= 0) {
+            document.getElementById("countdown").innerHTML = '<span style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red)">Drop Closed</span>';
+            return;
+          }
+          const d = Math.floor(diff / 86400000);
+          const h = Math.floor((diff % 86400000) / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          document.getElementById("cdDays").textContent = pad(d);
+          document.getElementById("cdHrs").textContent  = pad(h);
+          document.getElementById("cdMin").textContent  = pad(m);
+          document.getElementById("cdSec").textContent  = pad(s);
+        }
+
+        tick();
+        setInterval(tick, 1000);
+
+        // Animate units fill bar in
+        setTimeout(() => {
+          const fill = document.getElementById("unitsFill");
+          if (fill) fill.style.width = "68%";
+        }, 400);
+      })();
+
+      function handlePreorder() {
+        // Add to cart and open drawer
+        const addBtn = document.querySelector('[data-id="strength-tee"]');
+        if (addBtn) addBtn.click();
+
+        // Scroll to product in grid
+        const firstCard = document.querySelector('[data-product-card]');
+        if (firstCard) firstCard.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // Flash the CTA
+        const cta = document.querySelector(".preorder-cta");
+        if (cta) {
+          cta.textContent = "Added to Cart ✓";
+          cta.style.background = "#ef1414";
+          cta.style.color = "#fff";
+          setTimeout(() => {
+            cta.textContent = "Secure Yours — $48";
+            cta.style.background = "";
+            cta.style.color = "";
+          }, 2200);
+        }
+
+        // Decrement units shown
+        const unitsEl = document.getElementById("unitsLeft");
+        if (unitsEl) {
+          const current = parseInt(unitsEl.textContent);
+          if (!isNaN(current) && current > 1) {
+            unitsEl.textContent = (current - 1) + " of 50 remaining";
+            const fill = document.getElementById("unitsFill");
+            if (fill) fill.style.width = ((current - 1) / 50 * 100) + "%";
+          }
+        }
+      }
     </script>
   </body>
 </html>
