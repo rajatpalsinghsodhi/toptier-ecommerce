@@ -157,7 +157,8 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 20% 15%, var(--red-dim), transparent 48%);
+        /* Remove red haze overlay so product photos stay true-to-color */
+        background: linear-gradient(180deg, rgba(0,0,0,0.14), transparent 55%);
         pointer-events: none;
       }
 
