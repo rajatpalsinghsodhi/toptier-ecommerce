@@ -279,6 +279,161 @@
         letter-spacing:0.06em;
       }
 
+      /* Create product modal */
+      .modal-overlay{
+        display:none;
+        position:fixed;
+        inset:0;
+        z-index: 420;
+        background: rgba(0,0,0,0.72);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+      }
+
+      .modal-overlay.open{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .modal{
+        width: min(820px, 100%);
+        border:1px solid var(--line2);
+        background: linear-gradient(135deg, rgba(239,20,20,0.10), transparent 40%), var(--ash2);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      }
+
+      .modal-head{
+        padding: 18px 18px;
+        border-bottom:1px solid var(--line);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 12px;
+      }
+
+      .modal-title{
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:0.22em;
+        text-transform:uppercase;
+      }
+
+      .modal-close{
+        width: 40px;
+        height: 40px;
+        display:grid;
+        place-items:center;
+        border:1px solid var(--line2);
+        background: rgba(16,16,16,0.72);
+        color: var(--bone);
+        font-size: 16px;
+      }
+
+      .modal-close:hover{border-color: var(--bone);}
+
+      .modal-body{
+        padding: 18px;
+        display:grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+      }
+
+      .form-card{
+        border:1px solid var(--line);
+        background: rgba(5,5,5,0.35);
+        padding: 16px;
+      }
+
+      .form-row{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .label{
+        font-size:10px;
+        font-weight:700;
+        letter-spacing:0.18em;
+        text-transform:uppercase;
+        color: rgba(242,238,231,0.58);
+        margin-bottom: 6px;
+      }
+
+      .field-lg{
+        height: 42px;
+        padding: 0 12px;
+      }
+
+      select.field{
+        appearance:none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f2eee7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat:no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+
+      select.field option{background:#111;}
+
+      .preview{
+        border:1px solid var(--line);
+        background: rgba(5,5,5,0.35);
+        overflow:hidden;
+        min-height: 260px;
+        display:flex;
+        flex-direction:column;
+      }
+
+      .preview-img{
+        aspect-ratio: 4 / 3;
+        width:100%;
+        background: rgba(0,0,0,0.25);
+        border-bottom:1px solid var(--line);
+        display:grid;
+        place-items:center;
+        overflow:hidden;
+      }
+
+      .preview-img img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        filter: saturate(0.95) contrast(1.06) brightness(0.88);
+        display:block;
+      }
+
+      .preview-body{
+        padding: 14px;
+        display:grid;
+        gap: 8px;
+      }
+
+      .preview-name{
+        font-weight:800;
+        letter-spacing:0.12em;
+        text-transform:uppercase;
+        line-height: 1.15;
+      }
+
+      .preview-meta{
+        color: rgba(242,238,231,0.6);
+        font-size:12px;
+        letter-spacing:0.08em;
+      }
+
+      .modal-foot{
+        padding: 16px 18px;
+        border-top:1px solid var(--line);
+        display:flex;
+        gap: 10px;
+        justify-content:flex-end;
+        flex-wrap:wrap;
+      }
+
+      @media (max-width: 820px){
+        .modal-body{grid-template-columns: 1fr; }
+      }
+
       .mini{
         font-size:10px;
         letter-spacing:0.16em;
@@ -664,7 +819,7 @@
               <div class="search">
                 <input id="productSearch" type="search" placeholder="Search products (name / category)" />
               </div>
-              <button class="btn red" type="button" onclick="toast('New product (demo)')">Add product</button>
+              <button class="btn red" type="button" id="addProductBtn">Add product</button>
             </div>
             <div style="overflow:auto">
               <table aria-label="Products table">
@@ -812,6 +967,77 @@
       </main>
     </div>
 
+    <!-- Create product modal -->
+    <div class="modal-overlay" id="createProductModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Create product">
+        <div class="modal-head">
+          <div class="modal-title">Create product</div>
+          <button class="modal-close" type="button" id="createProductClose" title="Close">✕</button>
+        </div>
+        <form id="createProductForm">
+          <div class="modal-body">
+            <div class="form-card">
+              <div style="display:grid;gap:12px">
+                <div>
+                  <div class="label">Name</div>
+                  <input class="field field-lg" id="cpName" placeholder="e.g. Tempest Camp Shirt" required />
+                </div>
+                <div class="form-row">
+                  <div>
+                    <div class="label">Category</div>
+                    <select class="field field-lg" id="cpCategory" required>
+                      <option>Tees</option>
+                      <option>Bottoms</option>
+                      <option>Jackets</option>
+                      <option>Caps</option>
+                      <option>Shirts</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div class="label">Price (CAD)</div>
+                    <input class="field field-lg" id="cpPrice" type="number" min="0" step="1" value="48" required />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div>
+                    <div class="label">Stock</div>
+                    <input class="field field-lg" id="cpStock" type="number" min="0" step="1" value="10" required />
+                  </div>
+                  <div>
+                    <div class="label">Visibility</div>
+                    <select class="field field-lg" id="cpVisible" required>
+                      <option value="true" selected>Visible</option>
+                      <option value="false">Hidden</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div class="label">Image</div>
+                  <select class="field field-lg" id="cpImage" required></select>
+                </div>
+                <div class="mini">This is a demo admin panel — products persist locally in your browser.</div>
+              </div>
+            </div>
+
+            <div class="preview" aria-label="Preview">
+              <div class="preview-img">
+                <img id="cpPreviewImg" alt="" />
+              </div>
+              <div class="preview-body">
+                <div class="preview-name" id="cpPreviewName">New product</div>
+                <div class="preview-meta" id="cpPreviewMeta">Category · $0 CAD · Stock 0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-foot">
+            <button class="btn" type="button" id="createProductCancel">Cancel</button>
+            <button class="btn red" type="submit">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script>
       const $ = (s, el = document) => el.querySelector(s);
       const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
@@ -857,7 +1083,7 @@
       }
 
       // Demo data
-      const products = [
+      const defaultProducts = [
         { id: "strength-tee", name: "Strength Within Tee", category: "Tees", price: 48, stock: 34, visible: true, image: "vibe-assets/strength-tee.png" },
         { id: "no-perfect-tee", name: "No Perfect People", category: "Tees", price: 52, stock: 28, visible: true, image: "vibe-assets/no-perfect-tee.png" },
         { id: "thorn-tee", name: "Crown of Thorns Tee", category: "Tees", price: 58, stock: 19, visible: true, image: "vibe-assets/thorn-tee.png" },
@@ -869,6 +1095,21 @@
         { id: "red-chaos-cap", name: "Red Chaos Cap", category: "Caps", price: 42, stock: 21, visible: true, image: "vibe-assets/cap-red-chaos.png" },
         { id: "ascension-shirt", name: "Ascension Camp Shirt", category: "Shirts", price: 96, stock: 11, visible: true, image: "vibe-assets/shirt-ascension.png" },
       ];
+
+      const STORAGE_KEY = "top-tier-admin-products";
+      const loadProducts = () => {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return defaultProducts.slice();
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : defaultProducts.slice();
+        } catch {
+          return defaultProducts.slice();
+        }
+      };
+      const saveProducts = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+
+      let products = loadProducts();
 
       const orders = [
         { id: "ORD-5102", customer: "Jane Cooper", date: "Apr 28, 2026", total: 215.50, status: "fulfilled" },
@@ -1061,6 +1302,139 @@
       renderOrders();
       renderPreorders();
       setActiveTab("overview");
+
+      // ── Create Product modal ──
+      const modal = document.getElementById("createProductModal");
+      const addBtn = document.getElementById("addProductBtn");
+      const closeBtn = document.getElementById("createProductClose");
+      const cancelBtn = document.getElementById("createProductCancel");
+      const form = document.getElementById("createProductForm");
+
+      const cpName = document.getElementById("cpName");
+      const cpCategory = document.getElementById("cpCategory");
+      const cpPrice = document.getElementById("cpPrice");
+      const cpStock = document.getElementById("cpStock");
+      const cpVisible = document.getElementById("cpVisible");
+      const cpImage = document.getElementById("cpImage");
+      const cpPreviewImg = document.getElementById("cpPreviewImg");
+      const cpPreviewName = document.getElementById("cpPreviewName");
+      const cpPreviewMeta = document.getElementById("cpPreviewMeta");
+
+      const imageOptions = [
+        "vibe-assets/strength-tee.png",
+        "vibe-assets/no-perfect-tee.png",
+        "vibe-assets/thorn-tee.png",
+        "vibe-assets/bottoms-script-denim.png",
+        "vibe-assets/bottoms-red-flame.png",
+        "vibe-assets/bottoms-white-tribal.png",
+        "vibe-assets/jacket-leather-varsity.png",
+        "vibe-assets/jacket-red-guard.png",
+        "vibe-assets/jacket-white-flame.png",
+        "vibe-assets/cap-dragon.png",
+        "vibe-assets/cap-red-chaos.png",
+        "vibe-assets/cap-blackout.png",
+        "vibe-assets/cap-sergeant.png",
+        "vibe-assets/shirt-ascension.png",
+        "vibe-assets/shirt-tempest.png",
+        "vibe-assets/gym-crew.png",
+      ];
+
+      function openCreateProduct() {
+        if (!modal) return;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        // defaults
+        cpName.value = "";
+        cpCategory.value = "Tees";
+        cpPrice.value = "48";
+        cpStock.value = "10";
+        cpVisible.value = "true";
+        cpImage.innerHTML = imageOptions.map(src => `<option value="${src}">${src.split("/").pop()}</option>`).join("");
+        cpImage.value = imageOptions[0];
+        updatePreview();
+        setTimeout(() => cpName.focus(), 50);
+      }
+
+      function closeCreateProduct() {
+        if (!modal) return;
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function slugify(name) {
+        return name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "")
+          .slice(0, 48) || "new-product";
+      }
+
+      function uniqueId(base) {
+        let id = base;
+        let i = 2;
+        while (products.some(p => p.id === id)) {
+          id = `${base}-${i++}`;
+        }
+        return id;
+      }
+
+      function updatePreview() {
+        const name = (cpName.value || "New product").trim();
+        const cat = cpCategory.value;
+        const price = Number(cpPrice.value || 0);
+        const stock = Number(cpStock.value || 0);
+        const img = cpImage.value || imageOptions[0];
+        cpPreviewImg.src = img;
+        cpPreviewImg.alt = name;
+        cpPreviewName.textContent = name || "New product";
+        cpPreviewMeta.textContent = `${cat} · ${money.format(price)} · Stock ${isFinite(stock) ? stock : 0}`;
+      }
+
+      [cpName, cpCategory, cpPrice, cpStock, cpVisible, cpImage].forEach(el => {
+        el?.addEventListener("input", updatePreview);
+        el?.addEventListener("change", updatePreview);
+      });
+
+      addBtn?.addEventListener("click", () => openCreateProduct());
+      closeBtn?.addEventListener("click", () => closeCreateProduct());
+      cancelBtn?.addEventListener("click", () => closeCreateProduct());
+      modal?.addEventListener("click", (e) => {
+        if (e.target === modal) closeCreateProduct();
+      });
+      window.addEventListener("keydown", (e) => {
+        if (!modal?.classList.contains("open")) return;
+        if (e.key === "Escape") closeCreateProduct();
+      });
+
+      form?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = String(cpName.value || "").trim();
+        if (!name) {
+          toast("Name required");
+          cpName.focus();
+          return;
+        }
+        const base = uniqueId(slugify(name));
+        const next = {
+          id: base,
+          name,
+          category: cpCategory.value,
+          price: Number(cpPrice.value || 0),
+          stock: Number(cpStock.value || 0),
+          visible: cpVisible.value === "true",
+          image: cpImage.value,
+        };
+        products.unshift(next);
+        saveProducts();
+        renderProducts($("#productSearch")?.value || "");
+        renderInventory();
+        renderOverview();
+        setActiveTab("products");
+        closeCreateProduct();
+        toast("Product created ✓");
+      });
     </script>
   </body>
 </html>
