@@ -885,6 +885,74 @@
         text-transform: uppercase;
       }
 
+      .newsletter {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .newsletter-label {
+        color: rgba(242, 238, 231, 0.72);
+        white-space: nowrap;
+      }
+
+      .newsletter-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .newsletter-form input {
+        width: min(320px, 60vw);
+        height: 44px;
+        padding: 0 14px;
+        border: 1px solid rgba(242, 238, 231, 0.22);
+        background: rgba(5, 5, 5, 0.6);
+        color: var(--bone);
+        outline: none;
+        letter-spacing: 0.08em;
+        text-transform: none;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .newsletter-form input::placeholder {
+        color: rgba(242, 238, 231, 0.38);
+      }
+
+      .newsletter-form button {
+        height: 44px;
+        padding: 0 16px;
+        border: 1px solid var(--bone);
+        background: transparent;
+        color: var(--bone);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        transition: background .18s, color .18s, border-color .18s;
+        white-space: nowrap;
+      }
+
+      .newsletter-form button:hover {
+        background: var(--bone);
+        color: var(--black);
+        border-color: var(--bone);
+      }
+
+      .newsletter-msg {
+        display: none;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(74, 222, 128, 0.9);
+      }
+
+      .newsletter-msg.show { display: inline; }
+
       @media (max-width: 980px) {
         .nav {
           grid-template-columns: 1fr auto;
@@ -970,6 +1038,25 @@
 
         .commerce-stat:last-child {
           border-bottom: 0;
+        }
+
+        .footer-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+
+        .newsletter {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .newsletter-form {
+          width: 100%;
+        }
+
+        .newsletter-form input {
+          width: 100%;
         }
 
         .filter-bar {
@@ -1744,6 +1831,14 @@
     <footer class="footer">
       <div class="shell footer-row">
         <span>Top Tier ecommerce prototype</span>
+        <div class="newsletter">
+          <span class="newsletter-label">Newsletter · latest drops</span>
+          <form class="newsletter-form" id="newsletterForm" autocomplete="on">
+            <input id="newsletterEmail" type="email" name="email" autocomplete="email" placeholder="Email address" required />
+            <button type="submit">Sign up</button>
+          </form>
+          <span class="newsletter-msg" id="newsletterMsg">You’re in.</span>
+        </div>
       </div>
     </footer>
     <script>
@@ -2024,6 +2119,38 @@
         const mobileCategoryView = window.matchMedia('(max-width: 640px)').matches && activeFilter !== 'all';
         productsGrid?.classList.toggle('is-mobile-category-view', mobileCategoryView);
       });
+
+      // Newsletter signup (demo)
+      (function () {
+        const form = document.getElementById("newsletterForm");
+        const email = document.getElementById("newsletterEmail");
+        const msg = document.getElementById("newsletterMsg");
+        if (!form || !email || !msg) return;
+
+        const stored = localStorage.getItem("top-tier-newsletter-email");
+        if (stored) {
+          email.value = stored;
+          msg.textContent = "Subscribed ✓";
+          msg.classList.add("show");
+        }
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const value = String(email.value || "").trim();
+          const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          if (!ok) {
+            msg.textContent = "Enter a valid email";
+            msg.style.color = "rgba(239,20,20,0.9)";
+            msg.classList.add("show");
+            return;
+          }
+          localStorage.setItem("top-tier-newsletter-email", value);
+          msg.style.color = "rgba(74, 222, 128, 0.9)";
+          msg.textContent = "Subscribed ✓";
+          msg.classList.add("show");
+          form.querySelector("button")?.blur();
+        });
+      })();
     </script>
   </body>
 </html>
