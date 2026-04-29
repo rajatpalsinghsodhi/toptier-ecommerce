@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Manrope, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
-import { Header } from "@/components/Header";
-import { SiteFooter } from "@/components/SiteFooter";
+import { RootChrome } from "@/components/RootChrome";
 
 const syne = Syne({
   variable: "--font-display",
@@ -41,9 +40,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col antialiased">
         <CartProvider>
-          <Header />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
+          <RootChrome>{children}</RootChrome>
         </CartProvider>
       </body>
     </html>
