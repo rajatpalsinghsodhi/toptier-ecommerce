@@ -698,6 +698,107 @@
       .size-table tr:last-child td { border-bottom: 0; }
       .size-table tr:hover td { background: rgba(242,238,231,0.03); }
 
+      /* ── Image zoom lightbox ── */
+      .zoom-hint {
+        position: absolute;
+        bottom: 14px;
+        left: 14px;
+        z-index: 3;
+        background: rgba(5,5,5,0.62);
+        border: 1px solid var(--line);
+        color: rgba(242,238,231,0.78);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        padding: 7px 10px;
+        backdrop-filter: blur(10px);
+        pointer-events: none;
+      }
+
+      .zoom-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 240;
+        background: rgba(0,0,0,0.88);
+        backdrop-filter: blur(8px);
+      }
+
+      .zoom-overlay.open { display: grid; }
+
+      .zoom-stage {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        cursor: grab;
+      }
+
+      .zoom-stage.grabbing { cursor: grabbing; }
+
+      .zoom-media {
+        max-width: min(1200px, 96vw);
+        max-height: min(820px, 86vh);
+        will-change: transform;
+        transform-origin: 50% 50%;
+        user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
+      }
+
+      .zoom-toolbar {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .zoom-btn {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        background: rgba(16,16,16,0.72);
+        border: 1px solid var(--line-bright);
+        color: var(--bone);
+        font-size: 16px;
+        line-height: 1;
+        transition: border-color .15s, background .15s;
+      }
+
+      .zoom-btn:hover { border-color: var(--bone); background: rgba(16,16,16,0.86); }
+
+      .zoom-label {
+        margin-right: 8px;
+        padding: 10px 12px;
+        background: rgba(16,16,16,0.72);
+        border: 1px solid var(--line);
+        color: rgba(242,238,231,0.72);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        min-width: 72px;
+        text-align: center;
+      }
+
+      .zoom-footer {
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        z-index: 2;
+        color: rgba(242,238,231,0.55);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
       /* ── Footer ── */
       .site-footer {
         padding: 40px 0;
@@ -911,6 +1012,21 @@
       </div>
     </div>
 
+    <!-- Image zoom lightbox -->
+    <div class="zoom-overlay" id="zoomOverlay" aria-hidden="true">
+      <div class="zoom-toolbar">
+        <div class="zoom-label" id="zoomLabel">100%</div>
+        <button class="zoom-btn" id="zoomOutBtn" type="button" title="Zoom out">−</button>
+        <button class="zoom-btn" id="zoomInBtn" type="button" title="Zoom in">+</button>
+        <button class="zoom-btn" id="zoomResetBtn" type="button" title="Reset">↺</button>
+        <button class="zoom-btn" id="zoomCloseBtn" type="button" title="Close">✕</button>
+      </div>
+      <div class="zoom-stage" id="zoomStage">
+        <img id="zoomImg" class="zoom-media" alt="" />
+      </div>
+      <div class="zoom-footer">Wheel to zoom · Drag to pan · Double-click to toggle</div>
+    </div>
+
     <!-- Cart -->
     <div class="cart-overlay" id="cartOverlay"></div>
     <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
@@ -969,6 +1085,7 @@
               <span class="badge drop">Drop 001</span>
               <span class="badge" data-badge style="display:none">Sale</span>
             </div>
+            <div class="zoom-hint">Click to zoom</div>
             <img data-main-image src="" alt="" id="mainImg" />
           </div>
           <div class="thumbnails" id="thumbs"></div>
@@ -1317,6 +1434,129 @@
         });
         thumbsEl.appendChild(btn);
       });
+
+      // Image zoom lightbox (click main image; dblclick while open toggles zoom)
+      (function initZoom() {
+        const overlay = document.getElementById("zoomOverlay");
+        const stage = document.getElementById("zoomStage");
+        const img = document.getElementById("zoomImg");
+        const label = document.getElementById("zoomLabel");
+        const btnIn = document.getElementById("zoomInBtn");
+        const btnOut = document.getElementById("zoomOutBtn");
+        const btnReset = document.getElementById("zoomResetBtn");
+        const btnClose = document.getElementById("zoomCloseBtn");
+
+        let scale = 1;
+        let tx = 0;
+        let ty = 0;
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startTx = 0;
+        let startTy = 0;
+
+        const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+        const setLabel = () => { label.textContent = `${Math.round(scale * 100)}%`; };
+
+        function applyTransform() {
+          img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+          setLabel();
+        }
+
+        function openZoom(src, alt) {
+          img.src = src;
+          img.alt = alt || "";
+          overlay.classList.add("open");
+          overlay.setAttribute("aria-hidden", "false");
+          document.body.style.overflow = "hidden";
+          scale = 1; tx = 0; ty = 0;
+          applyTransform();
+        }
+
+        function closeZoom() {
+          overlay.classList.remove("open");
+          overlay.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+        }
+
+        function zoomBy(delta, cx, cy) {
+          const prev = scale;
+          scale = clamp(scale + delta, 1, 4);
+          if (scale === prev) return;
+
+          const rect = stage.getBoundingClientRect();
+          const x = (cx ?? (rect.left + rect.width / 2)) - (rect.left + rect.width / 2);
+          const y = (cy ?? (rect.top + rect.height / 2)) - (rect.top + rect.height / 2);
+          const factor = scale / prev;
+          tx = x - (x - tx) * factor;
+          ty = y - (y - ty) * factor;
+          applyTransform();
+        }
+
+        mainImg.style.cursor = "zoom-in";
+        mainImg.addEventListener("click", () => openZoom(mainImg.src, mainImg.alt));
+
+        // Open from thumbnail via right-click (context menu) is annoying; instead: Alt+click opens zoom
+        thumbsEl.addEventListener("click", (e) => {
+          const isAlt = e.altKey || e.metaKey;
+          const t = e.target.closest(".thumb");
+          if (!isAlt || !t) return;
+          const src = t.querySelector("img")?.getAttribute("src");
+          if (src) openZoom(src, product.name);
+        });
+
+        btnClose.addEventListener("click", closeZoom);
+        btnReset.addEventListener("click", () => { scale = 1; tx = 0; ty = 0; applyTransform(); });
+        btnIn.addEventListener("click", () => zoomBy(0.25));
+        btnOut.addEventListener("click", () => zoomBy(-0.25));
+
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) closeZoom();
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (!overlay.classList.contains("open")) return;
+          if (e.key === "Escape") closeZoom();
+          if (e.key === "+" || e.key === "=") zoomBy(0.25);
+          if (e.key === "-" || e.key === "_") zoomBy(-0.25);
+          if (e.key === "0") { scale = 1; tx = 0; ty = 0; applyTransform(); }
+        });
+
+        stage.addEventListener("wheel", (e) => {
+          if (!overlay.classList.contains("open")) return;
+          e.preventDefault();
+          zoomBy(e.deltaY < 0 ? 0.18 : -0.18, e.clientX, e.clientY);
+        }, { passive: false });
+
+        stage.addEventListener("pointerdown", (e) => {
+          if (!overlay.classList.contains("open")) return;
+          dragging = true;
+          stage.classList.add("grabbing");
+          startX = e.clientX;
+          startY = e.clientY;
+          startTx = tx;
+          startTy = ty;
+          stage.setPointerCapture(e.pointerId);
+        });
+
+        stage.addEventListener("pointermove", (e) => {
+          if (!dragging) return;
+          tx = startTx + (e.clientX - startX);
+          ty = startTy + (e.clientY - startY);
+          applyTransform();
+        });
+
+        stage.addEventListener("pointerup", () => {
+          dragging = false;
+          stage.classList.remove("grabbing");
+        });
+
+        stage.addEventListener("dblclick", () => {
+          if (!overlay.classList.contains("open")) return;
+          if (scale === 1) { scale = 2; } else { scale = 1; tx = 0; ty = 0; }
+          applyTransform();
+        });
+      })();
 
       // Sizes
       const chipsEl = document.getElementById("sizeChips");
