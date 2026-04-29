@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — Top Tier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --black:#050505;
+        --ash:#101010;
+        --ash2:#181818;
+        --ash3:#1f1f1f;
+        --bone:#f2eee7;
+        --cream:#e6ddcf;
+        --red:#ef1414;
+        --red-dim: rgba(239,20,20,0.12);
+        --green:#4ade80;
+        --blue:#60a5fa;
+        --amber:#facc15;
+        --line: rgba(242,238,231,0.10);
+        --line2: rgba(242,238,231,0.18);
+        --muted: rgba(242,238,231,0.52);
+      }
+
+      *{box-sizing:border-box;margin:0;padding:0}
+      html{scroll-behavior:smooth}
+      body{
+        background:var(--black);
+        color:var(--bone);
+        font-family:Rajdhani, system-ui, sans-serif;
+        font-weight:500;
+        min-height:100vh;
+      }
+
+      body::before{
+        content:"";
+        pointer-events:none;
+        position:fixed; inset:0; z-index:200;
+        opacity:0.06; mix-blend-mode:screen;
+        background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      }
+
+      a{color:inherit;text-decoration:none}
+      button{font:inherit;cursor:pointer;border:0}
+      input{font:inherit}
+
+      .topbar{
+        position:sticky; top:0; z-index:90;
+        background: rgba(5,5,5,0.92);
+        backdrop-filter: blur(20px);
+        border-bottom:1px solid var(--line);
+      }
+
+      .nav{
+        width:min(1400px, calc(100% - 40px));
+        margin-inline:auto;
+        min-height:70px;
+        display:grid;
+        grid-template-columns: 260px 1fr auto;
+        align-items:center;
+        gap:18px;
+      }
+
+      .brand{
+        display:flex; align-items:center; gap:12px;
+        letter-spacing:0.2em; text-transform:uppercase;
+        font-weight:700;
+        font-size:11px;
+        color:var(--muted);
+      }
+      .brand strong{
+        color:var(--bone);
+        font-family:"Archivo Black", Impact, sans-serif;
+        letter-spacing:-0.04em;
+        font-size:16px;
+      }
+
+      .nav-actions{
+        display:flex; align-items:center; gap:12px;
+      }
+
+      .pill{
+        height:38px;
+        padding:0 14px;
+        display:inline-flex; align-items:center; gap:10px;
+        border:1px solid var(--line2);
+        background: rgba(16,16,16,0.6);
+        color: rgba(242,238,231,0.72);
+        font-size:10px; font-weight:700;
+        letter-spacing:0.22em; text-transform:uppercase;
+        transition: border-color .18s, color .18s, background .18s;
+      }
+      .pill:hover{border-color:var(--bone); color:var(--bone); background: rgba(16,16,16,0.8);}
+
+      .pill.red{
+        background: rgba(239,20,20,0.12);
+        border-color: rgba(239,20,20,0.35);
+        color: var(--bone);
+      }
+
+      .shell{
+        width:min(1400px, calc(100% - 40px));
+        margin-inline:auto;
+      }
+
+      .layout{
+        display:grid;
+        grid-template-columns: 260px 1fr;
+        min-height: calc(100vh - 70px);
+        border-left:1px solid var(--line);
+        border-right:1px solid var(--line);
+        border-bottom:1px solid var(--line);
+      }
+
+      /* Sidebar */
+      .sidebar{
+        background:var(--ash);
+        border-right:1px solid var(--line);
+        padding:18px 0;
+        position:sticky;
+        top:70px;
+        align-self:start;
+        height: calc(100vh - 70px);
+        overflow:auto;
+      }
+
+      .side-head{
+        padding: 6px 18px 12px;
+        display:flex; align-items:center; justify-content:space-between; gap:12px;
+      }
+
+      .role-badge{
+        padding: 6px 10px;
+        border:1px solid rgba(239,20,20,0.35);
+        background: rgba(239,20,20,0.10);
+        color: rgba(242,238,231,0.85);
+        font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase;
+      }
+
+      .side-section{
+        padding: 16px 18px 10px;
+        font-size:9px;
+        font-weight:700;
+        letter-spacing:0.26em;
+        text-transform:uppercase;
+        color: rgba(242,238,231,0.42);
+      }
+
+      .nav-item{
+        width:100%;
+        padding: 12px 18px;
+        display:flex; align-items:center; gap:12px;
+        background:transparent;
+        border-left:2px solid transparent;
+        color: rgba(242,238,231,0.58);
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:0.14em;
+        text-transform:uppercase;
+        transition: background .18s, color .18s, border-color .18s;
+        text-align:left;
+      }
+      .nav-item:hover{background: rgba(242,238,231,0.04); color: var(--bone);}
+      .nav-item.active{
+        background: rgba(239,20,20,0.10);
+        color: var(--bone);
+        border-left-color: var(--red);
+      }
+      .nav-item svg{width:16px;height:16px;flex-shrink:0}
+      .nav-item .count{
+        margin-left:auto;
+        min-width:22px;height:22px;border-radius:999px;
+        display:grid;place-items:center;
+        background: rgba(242,238,231,0.08);
+        border:1px solid var(--line);
+        color: rgba(242,238,231,0.7);
+        font-size:11px; letter-spacing:0;
+        padding:0 7px;
+      }
+      .nav-item.active .count{
+        background: rgba(239,20,20,0.18);
+        border-color: rgba(239,20,20,0.35);
+        color: rgba(242,238,231,0.9);
+      }
+
+      /* Main */
+      .main{
+        padding: 30px 34px 40px;
+        background: linear-gradient(180deg, rgba(239,20,20,0.06), transparent 20%), var(--black);
+      }
+
+      .page-title{
+        font-family:"Archivo Black", Impact, sans-serif;
+        letter-spacing:-0.05em;
+        text-transform:uppercase;
+        font-size:34px;
+        line-height:1;
+      }
+      .page-subtitle{
+        margin-top:8px;
+        color: var(--muted);
+        font-size:14px;
+        letter-spacing:0.08em;
+      }
+
+      .kpis{
+        margin-top:22px;
+        display:grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap:12px;
+      }
+
+      .kpi{
+        border:1px solid var(--line);
+        background: var(--ash);
+        padding:18px 18px 16px;
+        position:relative;
+        overflow:hidden;
+      }
+
+      .kpi::before{
+        content:"";
+        position:absolute;
+        inset:-40px -40px auto auto;
+        width:140px;height:140px;
+        background: radial-gradient(circle at 30% 30%, rgba(239,20,20,0.22), transparent 58%);
+        transform: rotate(18deg);
+      }
+
+      .kpi-label{
+        font-size:9px;
+        font-weight:700;
+        letter-spacing:0.26em;
+        text-transform:uppercase;
+        color: rgba(242,238,231,0.5);
+      }
+
+      .kpi-value{
+        margin-top:8px;
+        font-family:"Bebas Neue", Impact, sans-serif;
+        font-size:38px;
+        color: var(--bone);
+        line-height:1;
+      }
+
+      .kpi-delta{
+        margin-top:6px;
+        font-size:12px;
+        color: rgba(74, 222, 128, 0.9);
+        font-weight:700;
+        letter-spacing:0.08em;
+      }
+
+      .grid{
+        margin-top:14px;
+        display:grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap:12px;
+        align-items:start;
+      }
+
+      .panel{
+        border:1px solid var(--line);
+        background: var(--ash);
+        overflow:hidden;
+      }
+
+      .panel-head{
+        padding: 16px 18px;
+        border-bottom:1px solid var(--line);
+        display:flex; align-items:center; justify-content:space-between; gap:12px;
+      }
+      .panel-title{
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:0.18em;
+        text-transform:uppercase;
+      }
+      .panel-link{
+        font-size:10px;
+        font-weight:700;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color: rgba(242,238,231,0.55);
+        transition: color .18s;
+      }
+      .panel-link:hover{color: var(--bone);}
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:13px;
+      }
+      th, td{
+        text-align:left;
+        padding: 12px 18px;
+        border-bottom:1px solid var(--line);
+        vertical-align:middle;
+      }
+      th{
+        font-size:10px;
+        font-weight:700;
+        letter-spacing:0.22em;
+        text-transform:uppercase;
+        color: rgba(242,238,231,0.44);
+        background: rgba(242,238,231,0.02);
+      }
+      tr:hover td{background: rgba(242,238,231,0.03);}
+
+      .status{
+        display:inline-flex; align-items:center; gap:8px;
+        padding: 5px 10px;
+        border-radius:999px;
+        font-size:10px;
+        font-weight:700;
+        letter-spacing:0.18em;
+        text-transform:uppercase;
+        border:1px solid transparent;
+      }
+      .status::before{content:""; width:7px; height:7px; border-radius:999px; background: currentColor;}
+      .s-fulfilled{color: var(--green); background: rgba(74,222,128,0.10); border-color: rgba(74,222,128,0.22);}
+      .s-pending{color: var(--amber); background: rgba(250,204,21,0.10); border-color: rgba(250,204,21,0.22);}
+      .s-preorder{color: var(--blue); background: rgba(96,165,250,0.10); border-color: rgba(96,165,250,0.22);}
+
+      .top-products{
+        display:flex;
+        flex-direction:column;
+      }
+
+      .tp-item{
+        display:flex;
+        gap:12px;
+        padding: 14px 18px;
+        border-bottom:1px solid var(--line);
+        align-items:center;
+      }
+      .tp-item:last-child{border-bottom:0;}
+
+      .tp-thumb{
+        width:42px;height:42px;
+        border:1px solid var(--line);
+        background: var(--ash3);
+        display:grid; place-items:center;
+        color: rgba(242,238,231,0.4);
+        font-weight:900;
+        border-radius: 8px;
+      }
+      .tp-name{
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:0.1em;
+        text-transform:uppercase;
+        line-height:1.2;
+      }
+      .tp-meta{
+        color: rgba(242,238,231,0.52);
+        font-size:12px;
+        margin-top:2px;
+      }
+      .tp-right{
+        margin-left:auto;
+        font-family:"Bebas Neue", Impact, sans-serif;
+        font-size:22px;
+        color: var(--red);
+        white-space:nowrap;
+      }
+
+      .empty-note{
+        padding: 18px;
+        color: var(--muted);
+        font-size:13px;
+        line-height:1.6;
+      }
+
+      /* Responsive */
+      @media (max-width: 980px){
+        .nav{grid-template-columns: 1fr auto;}
+        .nav-actions{display:none;}
+        .layout{grid-template-columns: 1fr;}
+        .sidebar{
+          position:relative;
+          top:auto;
+          height:auto;
+          border-right:0;
+          border-bottom:1px solid var(--line);
+          display:flex;
+          gap:8px;
+          padding: 12px 12px 10px;
+          overflow:auto;
+        }
+        .side-head, .side-section{display:none;}
+        .nav-item{
+          border-left:0;
+          border-bottom:2px solid transparent;
+          background: transparent;
+          white-space:nowrap;
+          padding: 10px 12px;
+        }
+        .nav-item.active{border-bottom-color: var(--red);}
+        .nav-item .count{display:none;}
+        .main{padding: 22px 14px 34px;}
+        .kpis{grid-template-columns: repeat(2, minmax(0, 1fr));}
+        .grid{grid-template-columns: 1fr;}
+      }
+
+      @media (max-width: 480px){
+        .kpis{grid-template-columns: 1fr;}
+        .page-title{font-size:30px;}
+        th:nth-child(2), td:nth-child(2){display:none;} /* hide customer on narrow screens */
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <nav class="nav">
+        <div class="brand">
+          <strong>TOP TIER</strong>
+          <span>Admin</span>
+        </div>
+        <div></div>
+        <div class="nav-actions">
+          <a class="pill" href="top-tier-vibe.html">Back to store</a>
+          <a class="pill red" href="dashboard.html">Customer view</a>
+        </div>
+      </nav>
+    </header>
+
+    <div class="shell layout">
+      <aside class="sidebar" aria-label="Admin navigation">
+        <div class="side-head">
+          <span class="role-badge">Admin</span>
+          <a class="pill" style="height:32px;padding:0 10px;font-size:9px" href="top-tier-vibe.html">Store</a>
+        </div>
+
+        <div class="side-section">Dashboard</div>
+        <button class="nav-item active" data-tab="overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h7v9H3z"/><path d="M14 3h7v5h-7z"/><path d="M14 10h7v11h-7z"/><path d="M3 14h7v7H3z"/>
+          </svg>
+          Overview
+        </button>
+        <button class="nav-item" data-tab="products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+          </svg>
+          Products <span class="count">15</span>
+        </button>
+        <button class="nav-item" data-tab="inventory">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/>
+          </svg>
+          Inventory <span class="count">3</span>
+        </button>
+        <button class="nav-item" data-tab="orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          Orders <span class="count">84</span>
+        </button>
+
+        <div class="side-section">Operations</div>
+        <button class="nav-item" data-tab="preorders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Pre-orders <span class="count">1</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6 1.65 1.65 0 0 0 10.51 3.09V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.09.36.09.74 0 1.1a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Settings
+        </button>
+      </aside>
+
+      <main class="main">
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Overview of your store performance</div>
+
+        <section class="kpis" aria-label="Key metrics">
+          <div class="kpi">
+            <div class="kpi-label">Total revenue</div>
+            <div class="kpi-value">$12,450.78</div>
+            <div class="kpi-delta">+15.2% from last month</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Orders</div>
+            <div class="kpi-value">84</div>
+            <div class="kpi-delta">+8.5% from last month</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Low stock alerts</div>
+            <div class="kpi-value">0</div>
+            <div class="kpi-delta" style="color:rgba(242,238,231,0.55)">Items need restock</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Pre-orders</div>
+            <div class="kpi-value">1</div>
+            <div class="kpi-delta" style="color:rgba(242,238,231,0.55)">Across 6 products</div>
+          </div>
+        </section>
+
+        <section class="grid">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Recent orders</div>
+              <a class="panel-link" href="#" onclick="return false;">View all →</a>
+            </div>
+            <div style="overflow:auto">
+              <table aria-label="Recent orders">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong style="letter-spacing:0.1em">ORD-5102</strong></td>
+                    <td>Jane Cooper</td>
+                    <td>Apr 28, 2026</td>
+                    <td>$215.50</td>
+                    <td><span class="status s-fulfilled">fulfilled</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="letter-spacing:0.1em">ORD-5101</strong></td>
+                    <td>Robert Fox</td>
+                    <td>Apr 27, 2026</td>
+                    <td>$89.00</td>
+                    <td><span class="status s-pending">pending</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="letter-spacing:0.1em">ORD-5100</strong></td>
+                    <td>Wade Warren</td>
+                    <td>Apr 27, 2026</td>
+                    <td>$180.00</td>
+                    <td><span class="status s-preorder">pre-order</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="letter-spacing:0.1em">ORD-5099</strong></td>
+                    <td>Esther Howard</td>
+                    <td>Apr 26, 2026</td>
+                    <td>$45.00</td>
+                    <td><span class="status s-fulfilled">fulfilled</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Top products</div>
+              <a class="panel-link" href="#" onclick="return false;">This month</a>
+            </div>
+            <div class="top-products">
+              <div class="tp-item">
+                <div class="tp-thumb">?</div>
+                <div>
+                  <div class="tp-name">Strength Within Tee</div>
+                  <div class="tp-meta">45 sold</div>
+                </div>
+                <div class="tp-right">45</div>
+              </div>
+              <div class="tp-item">
+                <div class="tp-thumb">?</div>
+                <div>
+                  <div class="tp-name">Script Storm Denim</div>
+                  <div class="tp-meta">32 sold</div>
+                </div>
+                <div class="tp-right">32</div>
+              </div>
+              <div class="tp-item">
+                <div class="tp-thumb">?</div>
+                <div>
+                  <div class="tp-name">Classic Hoodie</div>
+                  <div class="tp-meta">28 sold</div>
+                </div>
+                <div class="tp-right">28</div>
+              </div>
+              <div class="tp-item">
+                <div class="tp-thumb">?</div>
+                <div>
+                  <div class="tp-name">Minimal Windbreaker</div>
+                  <div class="tp-meta">15 sold</div>
+                </div>
+                <div class="tp-right">15</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top:12px">
+          <div class="panel-head">
+            <div class="panel-title">Admin notes</div>
+            <span class="panel-link" style="cursor:default">Prototype mode</span>
+          </div>
+          <div class="empty-note">
+            This is a static admin dashboard for client presentation. Next steps would be wiring inventory, product edits, and order state changes to a backend.
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // Simple tab highlight (visual only in this prototype)
+      document.querySelectorAll(".nav-item[data-tab]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
+
