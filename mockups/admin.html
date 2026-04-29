@@ -961,7 +961,15 @@
           return `
             <tr>
               <td><strong style="letter-spacing:0.1em">${p.id.toUpperCase()}</strong></td>
-              <td>${p.name}</td>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-thumb"><img src="${p.image}" alt="${p.name}" loading="lazy" /></div>
+                  <div>
+                    <strong style="letter-spacing:0.1em">${p.name}</strong>
+                    <div class="mini" style="margin-top:4px">${p.category}</div>
+                  </div>
+                </div>
+              </td>
               <td><input class="field" style="width:86px" type="number" min="0" value="${p.stock}" data-stock="${p.id}" /></td>
               <td>${reserved}</td>
               <td><strong>${available}</strong></td>
