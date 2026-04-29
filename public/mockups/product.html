@@ -1,0 +1,1478 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Top Tier - Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --black: #050505;
+        --ash: #101010;
+        --ash2: #181818;
+        --bone: #f2eee7;
+        --cream: #e6ddcf;
+        --red: #ef1414;
+        --red-dim: rgba(239, 20, 20, 0.14);
+        --muted: rgba(242, 238, 231, 0.52);
+        --line: rgba(242, 238, 231, 0.12);
+        --line-bright: rgba(242, 238, 231, 0.22);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        background: var(--black);
+        color: var(--bone);
+        font-family: Rajdhani, system-ui, sans-serif;
+        font-weight: 500;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        opacity: 0.08;
+        mix-blend-mode: screen;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      }
+
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; cursor: pointer; border: 0; }
+      img { display: block; max-width: 100%; }
+
+      /* ── Layout shell ── */
+      .shell { width: min(1440px, calc(100% - 40px)); margin-inline: auto; }
+
+      /* ── Topbar ── */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 90;
+        border-bottom: 1px solid var(--line);
+        background: rgba(5, 5, 5, 0.88);
+        backdrop-filter: blur(20px);
+      }
+
+      .nav {
+        min-height: 80px;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .nav img { width: min(380px, 50vw); filter: drop-shadow(0 8px 22px rgba(255,255,255,0.07)); }
+
+      .nav-left, .nav-right {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .nav-right { justify-content: flex-end; }
+
+      .nav-left a, .nav-right a { opacity: 0.7; transition: opacity .2s; }
+      .nav-left a:hover, .nav-right a:hover { opacity: 1; }
+
+      .cart-btn {
+        position: relative;
+        border: 1px solid var(--bone);
+        background: transparent;
+        color: var(--bone);
+        padding: 9px 16px;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      .cart-count {
+        position: absolute;
+        top: -9px; right: -9px;
+        min-width: 20px; height: 20px;
+        display: grid; place-items: center;
+        border-radius: 999px;
+        background: var(--red);
+        color: #fff;
+        font-size: 10px;
+        letter-spacing: 0;
+      }
+
+      /* ── Breadcrumb ── */
+      .breadcrumb {
+        padding: 18px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .breadcrumb a { opacity: 0.6; transition: opacity .2s; }
+      .breadcrumb a:hover { opacity: 1; color: var(--bone); }
+      .breadcrumb span { opacity: 0.3; }
+
+      /* ── Product layout ── */
+      .product-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+        gap: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      /* ── Media column ── */
+      .media-col {
+        position: sticky;
+        top: 80px;
+        align-self: start;
+        padding: clamp(24px, 4vw, 56px);
+        border-right: 1px solid var(--line);
+      }
+
+      .main-image-wrap {
+        position: relative;
+        background: var(--ash);
+        overflow: hidden;
+      }
+
+      .main-image-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 15%, var(--red-dim), transparent 48%);
+        pointer-events: none;
+      }
+
+      .main-image-wrap img {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+        display: block;
+        transition: transform .5s ease;
+      }
+
+      .main-image-wrap:hover img { transform: scale(1.03); }
+
+      .badges {
+        position: absolute;
+        top: 16px; left: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 2;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        background: var(--red);
+        color: #fff;
+      }
+
+      .badge.drop { background: var(--bone); color: var(--black); }
+
+      .thumbnails {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .thumb {
+        background: var(--ash2);
+        border: 1px solid var(--line);
+        overflow: hidden;
+        cursor: pointer;
+        transition: border-color .2s;
+      }
+
+      .thumb.active { border-color: var(--red); }
+      .thumb:hover { border-color: var(--line-bright); }
+
+      .thumb img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        filter: brightness(.8);
+        transition: filter .2s;
+      }
+
+      .thumb.active img, .thumb:hover img { filter: brightness(1); }
+
+      .image-note {
+        margin-top: 12px;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      /* ── Info column ── */
+      .info-col {
+        padding: clamp(28px, 5vw, 70px);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.36em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 12px;
+      }
+
+      .product-name {
+        font-family: "Archivo Black", Impact, sans-serif;
+        font-size: clamp(36px, 6vw, 80px);
+        line-height: 0.85;
+        letter-spacing: -0.06em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+
+      .rating-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .stars { color: var(--red); font-size: 15px; letter-spacing: 1px; }
+
+      .rating-count {
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      .price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .price-current {
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: 52px;
+        color: var(--red);
+        line-height: 1;
+      }
+
+      .price-original {
+        font-size: 20px;
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      .price-tag {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        background: var(--red);
+        color: #fff;
+        padding: 3px 8px;
+        align-self: center;
+      }
+
+      .description {
+        font-size: 16px;
+        line-height: 1.65;
+        color: rgba(242,238,231,0.74);
+        margin-bottom: 28px;
+      }
+
+      /* ── Size section ── */
+      .section-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .size-guide-link {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--bone);
+        text-decoration: underline;
+        cursor: pointer;
+        background: none;
+        border: 0;
+        padding: 0;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 22px;
+      }
+
+      .chip {
+        min-width: 52px;
+        border: 1px solid var(--line-bright);
+        background: transparent;
+        color: var(--bone);
+        padding: 11px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        transition: border-color .15s, background .15s;
+      }
+
+      .chip:hover { border-color: var(--bone); }
+
+      .chip.is-active {
+        border-color: var(--red);
+        background: var(--red);
+        color: #fff;
+      }
+
+      .chip.is-sold-out {
+        opacity: 0.32;
+        cursor: not-allowed;
+        text-decoration: line-through;
+      }
+
+      /* ── CTA ── */
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .btn-atc {
+        min-height: 58px;
+        background: var(--red);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        border: 2px solid var(--red);
+        transition: background .15s;
+      }
+
+      .btn-atc:hover { background: #c80e0e; border-color: #c80e0e; }
+      .btn-atc.added { background: #1a7a2a; border-color: #1a7a2a; }
+
+      .btn-save {
+        min-height: 58px;
+        min-width: 58px;
+        border: 1px solid var(--line-bright);
+        background: transparent;
+        color: var(--bone);
+        font-size: 20px;
+        display: grid;
+        place-items: center;
+        transition: border-color .15s, color .15s;
+      }
+
+      .btn-save:hover { border-color: var(--red); color: var(--red); }
+      .btn-save.saved { color: var(--red); border-color: var(--red); }
+
+      .btn-full {
+        width: 100%;
+        min-height: 52px;
+        background: transparent;
+        color: var(--bone);
+        border: 1px solid var(--line-bright);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        transition: border-color .15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn-full:hover { border-color: var(--bone); }
+
+      /* ── Trust badges ── */
+      .trust-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+        margin-bottom: 28px;
+      }
+
+      .trust-item {
+        background: var(--black);
+        padding: 14px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        text-align: center;
+      }
+
+      .trust-icon { width: 22px; height: 22px; color: var(--bone); flex-shrink: 0; }
+
+      .trust-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        line-height: 1.3;
+      }
+
+      /* ── Accordion ── */
+      .accordion { border-top: 1px solid var(--line); }
+
+      .accordion-item { border-bottom: 1px solid var(--line); }
+
+      .accordion-trigger {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 0;
+        background: transparent;
+        color: var(--bone);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        text-align: left;
+      }
+
+      .accordion-arrow {
+        font-size: 16px;
+        transition: transform .25s;
+        flex-shrink: 0;
+      }
+
+      .accordion-item.open .accordion-arrow { transform: rotate(45deg); }
+
+      .accordion-body {
+        display: none;
+        padding: 0 0 20px;
+        font-size: 15px;
+        line-height: 1.7;
+        color: rgba(242,238,231,0.68);
+      }
+
+      .accordion-item.open .accordion-body { display: block; }
+
+      .accordion-body ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .accordion-body li::before {
+        content: "— ";
+        color: var(--red);
+        font-weight: 700;
+      }
+
+      /* ── Reviews ── */
+      .reviews-section {
+        padding: 70px 0 60px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 36px;
+      }
+
+      .section-title {
+        font-family: "Archivo Black", Impact, sans-serif;
+        font-size: clamp(28px, 4vw, 52px);
+        letter-spacing: -0.05em;
+        text-transform: uppercase;
+        line-height: 0.9;
+      }
+
+      .rating-summary {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .rating-big {
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: 64px;
+        color: var(--red);
+        line-height: 1;
+      }
+
+      .review-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+      }
+
+      .review-card {
+        background: var(--ash);
+        padding: 28px;
+      }
+
+      .review-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+      }
+
+      .reviewer-name {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .reviewer-date {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+      }
+
+      .review-stars { color: var(--red); font-size: 13px; margin-bottom: 10px; }
+
+      .review-body {
+        font-size: 15px;
+        line-height: 1.6;
+        color: rgba(242,238,231,0.72);
+      }
+
+      .review-verified {
+        margin-top: 14px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #4ade80;
+      }
+
+      /* ── Related ── */
+      .related-section { padding: 70px 0; }
+
+      .related-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .related-card {
+        border: 1px solid var(--line);
+        background: var(--ash);
+        overflow: hidden;
+        cursor: pointer;
+        transition: border-color .2s;
+      }
+
+      .related-card:hover { border-color: var(--line-bright); }
+
+      .related-card-img {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .related-card-img img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        display: block;
+        transition: transform .4s ease;
+      }
+
+      .related-card:hover .related-card-img img { transform: scale(1.06); }
+
+      .related-card-body {
+        padding: 14px;
+        border-top: 1px solid var(--line);
+      }
+
+      .related-card-name {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .related-card-price {
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: 22px;
+        color: var(--red);
+      }
+
+      /* ── Size guide modal ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(0,0,0,0.82);
+        backdrop-filter: blur(6px);
+      }
+
+      .modal-overlay.open { display: flex; align-items: center; justify-content: center; }
+
+      .modal {
+        width: min(560px, calc(100% - 40px));
+        background: var(--ash2);
+        border: 1px solid var(--line-bright);
+        padding: 36px;
+        position: relative;
+      }
+
+      .modal-title {
+        font-family: "Archivo Black", Impact, sans-serif;
+        font-size: 28px;
+        letter-spacing: -0.04em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 16px; right: 16px;
+        background: transparent;
+        color: var(--bone);
+        font-size: 22px;
+        width: 36px; height: 36px;
+        display: grid; place-items: center;
+        border: 1px solid var(--line);
+        transition: border-color .15s;
+      }
+
+      .modal-close:hover { border-color: var(--bone); }
+
+      .size-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .size-table th, .size-table td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+      .size-table th { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+      .size-table tr:last-child td { border-bottom: 0; }
+      .size-table tr:hover td { background: rgba(242,238,231,0.03); }
+
+      /* ── Footer ── */
+      .site-footer {
+        padding: 40px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* ── Cart drawer ── */
+      .cart-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 150;
+        background: rgba(0,0,0,0.7);
+      }
+
+      .cart-overlay.open { display: block; }
+
+      .cart-drawer {
+        position: fixed;
+        top: 0; right: 0;
+        width: min(420px, 100vw);
+        height: 100%;
+        z-index: 160;
+        background: var(--ash2);
+        border-left: 1px solid var(--line-bright);
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform .3s ease;
+      }
+
+      .cart-drawer.open { transform: translateX(0); }
+
+      .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+      }
+
+      .cart-close-btn {
+        background: transparent;
+        color: var(--bone);
+        font-size: 20px;
+        width: 36px; height: 36px;
+        display: grid; place-items: center;
+        border: 1px solid var(--line);
+      }
+
+      .cart-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+      .cart-empty {
+        text-align: center;
+        padding: 60px 0;
+        font-size: 13px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .cart-item {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 14px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        align-items: start;
+      }
+
+      .cart-item-img { aspect-ratio: 1; object-fit: cover; width: 72px; }
+
+      .cart-item-info { font-size: 13px; }
+
+      .cart-item-name {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+
+      .cart-item-meta { color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+      .cart-item-price {
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: 22px;
+        color: var(--red);
+        margin-top: 6px;
+      }
+
+      .cart-qty {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .qty-btn {
+        width: 28px; height: 28px;
+        border: 1px solid var(--line-bright);
+        background: transparent;
+        color: var(--bone);
+        font-size: 16px;
+        display: grid; place-items: center;
+      }
+
+      .qty-val { font-size: 14px; font-weight: 700; min-width: 18px; text-align: center; }
+
+      .cart-footer {
+        padding: 20px 24px;
+        border-top: 1px solid var(--line);
+      }
+
+      .cart-subtotal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .cart-subtotal-amount {
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: 30px;
+        color: var(--red);
+      }
+
+      .btn-checkout {
+        width: 100%;
+        min-height: 54px;
+        background: var(--red);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        transition: background .15s;
+      }
+
+      .btn-checkout:hover { background: #c80e0e; }
+
+      .cart-note {
+        margin-top: 12px;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 1000px) {
+        .product-grid { grid-template-columns: 1fr; }
+        .media-col { position: relative; top: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+        .nav { grid-template-columns: 1fr auto; }
+        .nav-left { display: none; }
+        .review-grid, .related-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
+      @media (max-width: 620px) {
+        .trust-row { grid-template-columns: 1fr; }
+        .review-grid { grid-template-columns: 1fr; }
+        .related-grid { grid-template-columns: repeat(2, 1fr); }
+        .thumbnails { grid-template-columns: repeat(3, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Size Guide Modal -->
+    <div class="modal-overlay" id="sizeModal">
+      <div class="modal">
+        <button class="modal-close" id="sizeModalClose">✕</button>
+        <h2 class="modal-title">Size Guide</h2>
+        <table class="size-table" id="sizeTable">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Chest (in)</th>
+              <th>Length (in)</th>
+              <th>Shoulder (in)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>38 – 40</td><td>27.5</td><td>17.5</td></tr>
+            <tr><td>M</td><td>40 – 42</td><td>28.5</td><td>18.5</td></tr>
+            <tr><td>L</td><td>42 – 44</td><td>29.5</td><td>19.5</td></tr>
+            <tr><td>XL</td><td>44 – 46</td><td>30.5</td><td>20.5</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:18px;font-size:13px;color:var(--muted);line-height:1.6;">All measurements in inches. Garments are oversized — size down if you prefer a slimmer fit.</p>
+      </div>
+    </div>
+
+    <!-- Cart -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+      <div class="cart-header">
+        <span>Cart <span data-cart-count style="color:var(--red)">0</span></span>
+        <button class="cart-close-btn" id="cartClose">✕</button>
+      </div>
+      <div class="cart-body" id="cartBody"></div>
+      <div class="cart-footer">
+        <div class="cart-subtotal">
+          <span>Subtotal</span>
+          <span class="cart-subtotal-amount" data-subtotal>$0</span>
+        </div>
+        <button class="btn-checkout" type="button" onclick="window.location.href='checkout.html'">Continue to Checkout</button>
+        <p class="cart-note">Taxes &amp; shipping calculated at checkout · Free over $150 CAD</p>
+      </div>
+    </aside>
+
+    <!-- Nav -->
+    <header class="topbar">
+      <nav class="shell nav">
+        <div class="nav-left">
+          <a href="top-tier-vibe.html">Shop</a>
+          <a href="top-tier-vibe.html#checkout">Checkout</a>
+          <a href="dashboard.html">My Account</a>
+        </div>
+        <a href="top-tier-vibe.html" aria-label="Top Tier home">
+          <img src="vibe-assets/top-tier-logo-new.png?v=1" alt="Top Tier" />
+        </a>
+        <div class="nav-right">
+          <a href="dashboard.html">My Account</a>
+          <button class="cart-btn" id="cartOpenBtn" type="button">
+            Cart <span class="cart-count" data-cart-count>0</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Breadcrumb -->
+      <div class="breadcrumb shell">
+        <a href="top-tier-vibe.html">Shop</a>
+        <span>/</span>
+        <span data-category-crumb>Drop 001</span>
+        <span>/</span>
+        <span data-name-crumb style="color:var(--bone);opacity:0.9">Product</span>
+      </div>
+
+      <!-- Product -->
+      <div class="product-grid">
+
+        <!-- Media -->
+        <div class="media-col">
+          <div class="main-image-wrap">
+            <div class="badges">
+              <span class="badge drop">Drop 001</span>
+              <span class="badge" data-badge style="display:none">Sale</span>
+            </div>
+            <img data-main-image src="" alt="" id="mainImg" />
+          </div>
+          <div class="thumbnails" id="thumbs"></div>
+          <p class="image-note">Toronto / Canada · Limited Run 2026</p>
+        </div>
+
+        <!-- Info -->
+        <div class="info-col">
+          <p class="eyebrow" data-category>Drop 001</p>
+          <h1 class="product-name" data-name>Product</h1>
+
+          <div class="rating-row">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count" onclick="document.getElementById('reviews').scrollIntoView({behavior:'smooth'})">48 reviews</span>
+          </div>
+
+          <div class="price-row">
+            <span class="price-current" data-price>$0</span>
+            <span class="price-original" data-original-price style="display:none"></span>
+            <span class="price-tag" data-sale-tag style="display:none">Sale</span>
+          </div>
+
+          <p class="description" data-description></p>
+
+          <!-- Size -->
+          <div>
+            <div class="section-label">
+              <span>Select Size</span>
+              <button class="size-guide-link" id="sizeGuideBtn">Size Guide</button>
+            </div>
+            <div class="chips" id="sizeChips"></div>
+          </div>
+
+          <!-- CTA -->
+          <div class="cta-row">
+            <button class="btn-atc" type="button" id="addToCartBtn">Add to Cart</button>
+            <button class="btn-save" type="button" id="saveBtn" title="Save for later">♡</button>
+          </div>
+
+          <button class="btn-full" type="button">
+            <span>⚡</span> Buy it now
+          </button>
+
+          <!-- Trust -->
+          <div class="trust-row">
+            <div class="trust-item">
+              <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <span class="trust-label">Free ship<br>over $150</span>
+            </div>
+            <div class="trust-item">
+              <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+              </svg>
+              <span class="trust-label">30-day<br>returns</span>
+            </div>
+            <div class="trust-item">
+              <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <span class="trust-label">Secure<br>checkout</span>
+            </div>
+          </div>
+
+          <!-- Accordion -->
+          <div class="accordion">
+            <div class="accordion-item open">
+              <button class="accordion-trigger" type="button">
+                Details &amp; Materials <span class="accordion-arrow">+</span>
+              </button>
+              <div class="accordion-body" data-materials></div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button">
+                Care Instructions <span class="accordion-arrow">+</span>
+              </button>
+              <div class="accordion-body">
+                <ul>
+                  <li>Machine wash cold, inside out</li>
+                  <li>Do not bleach</li>
+                  <li>Tumble dry low or hang dry</li>
+                  <li>Warm iron if needed — avoid print</li>
+                  <li>Do not dry clean</li>
+                </ul>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button">
+                Shipping &amp; Returns <span class="accordion-arrow">+</span>
+              </button>
+              <div class="accordion-body">
+                <ul>
+                  <li>Ships from Toronto, Canada</li>
+                  <li>Free standard shipping over $150 CAD</li>
+                  <li>US orders: 5 – 8 business days</li>
+                  <li>Canada orders: 3 – 5 business days</li>
+                  <li>Returns accepted within 30 days, unworn with tags</li>
+                  <li>Final sale items are not returnable</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <section class="reviews-section shell" id="reviews">
+        <div class="section-header">
+          <h2 class="section-title">Customer<br>Reviews</h2>
+          <div class="rating-summary">
+            <div class="rating-big">4.9</div>
+            <div>
+              <div class="stars" style="font-size:18px">★★★★★</div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px">48 reviews</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-grid" id="reviewGrid"></div>
+      </section>
+
+      <!-- Related -->
+      <section class="related-section shell">
+        <p class="eyebrow">You may also like</p>
+        <h2 class="section-title" style="margin-bottom:0">Related Pieces</h2>
+        <div class="related-grid" id="relatedGrid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span>© 2026 Top Tier · Toronto, ON</span>
+        <span>Faith Made Wearable</span>
+        <a href="top-tier-vibe.html">← Back to Shop</a>
+      </div>
+    </footer>
+
+    <script>
+      const products = [
+        {
+          id: "strength-tee",
+          name: "Strength Within Tee",
+          price: 48,
+          category: "Graphic Tee",
+          image: "vibe-assets/strength-tee.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Black heavyweight tee with scripture-inspired back typography, cracked cream type, and red script energy. 380gsm cotton fleece, boxy oversized cut.",
+          materials: ["380gsm 100% heavyweight cotton", "Oversized boxy fit — size down for regular", "Screenprinted back graphic", "Ribbed crewneck collar", "Dropped shoulder seam"],
+        },
+        {
+          id: "no-perfect-tee",
+          name: "No Perfect People",
+          price: 52,
+          category: "Graphic Tee",
+          image: "vibe-assets/no-perfect-tee.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "White oversized graphic tee with blue hit and oversized back print. Clean enough for Sunday, loud enough for the drop.",
+          materials: ["340gsm 100% cotton jersey", "Oversized silhouette", "Plastisol front graphic", "Double-stitched hem and sleeves", "Pre-washed for softness"],
+        },
+        {
+          id: "freshly-capsule",
+          name: "Freshly Capsule",
+          price: 210,
+          category: "Capsule",
+          image: "vibe-assets/summer-drop.png",
+          sizes: ["Pack", "Gift"],
+          description: "Six-piece capsule concept bundling tees and hoodie language into one campaign pack. Gift-boxed and limited.",
+          materials: ["Includes 2 graphic tees + 1 hoodie + 3 accessory items", "Campaign gift box packaging", "Limited to 50 units", "Mix of 340gsm and 380gsm cotton", "Care cards included"],
+        },
+        {
+          id: "red-flame-bottoms",
+          name: "Red Flame Bottoms",
+          price: 88,
+          category: "Bottoms",
+          image: "vibe-assets/bottoms-red-flame.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Black relaxed bottoms with red flame graphics rising from the hem. Wide leg, elasticated waist, drawstring.",
+          materials: ["320gsm heavyweight French terry cotton", "Relaxed wide-leg silhouette", "Elasticated waistband with drawstring", "Red flame screenprint on both legs", "Ribbed cuffs"],
+        },
+        {
+          id: "white-thorn-bottoms",
+          name: "White Thorn Bottoms",
+          price: 92,
+          category: "Bottoms",
+          image: "vibe-assets/bottoms-white-tribal.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Black wide-leg bottoms with sharp white thorn graphics across both legs.",
+          materials: ["360gsm cotton fleece", "Straight wide-leg cut", "Allover thorn graphic print", "Elasticated waistband", "Side slash pockets"],
+        },
+        {
+          id: "script-storm-denim",
+          name: "Script Storm Denim",
+          price: 118,
+          category: "Bottoms",
+          image: "vibe-assets/bottoms-script-denim.png",
+          sizes: ["28", "30", "32", "34"],
+          description: "Washed dark denim with script typography and lightning-style artwork down the leg.",
+          materials: ["12oz washed dark denim", "Regular straight fit", "5-pocket construction", "Screen-printed leg artwork", "Button fly with metal hardware"],
+        },
+        {
+          id: "white-flame-jacket",
+          name: "White Flame Jacket",
+          price: 148,
+          category: "Jacket",
+          image: "vibe-assets/jacket-white-flame.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "White zip jacket with black flame placement and cropped streetwear silhouette.",
+          materials: ["300gsm French terry cotton shell", "Full zip closure", "Cropped boxy fit", "Embroidered flame placement on chest", "Two side zip pockets"],
+        },
+        {
+          id: "leather-varsity-jacket",
+          name: "Leather Varsity Jacket",
+          price: 188,
+          category: "Jacket",
+          image: "vibe-assets/jacket-leather-varsity.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Black and white leather varsity jacket with oversized block graphics and ribbed trim.",
+          materials: ["PU leather body and sleeves", "Wool-blend ribbed collar, cuffs and hem", "Full snap button closure", "Oversized graphic on back", "Two welt hand pockets"],
+        },
+        {
+          id: "red-guard-jacket",
+          name: "Red Guard Jacket",
+          price: 162,
+          category: "Jacket",
+          image: "vibe-assets/jacket-red-guard.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Grey and black work jacket with red campaign backdrop and guard-dog shadow artwork.",
+          materials: ["Heavy canvas shell", "Unlined with clean interior finish", "Four front patch pockets", "Red tonal lining details", "Heavy duty zipper and snap closure"],
+        },
+        {
+          id: "sergeant-distress-cap",
+          name: "Sergeant Distress Cap",
+          price: 38,
+          category: "Cap",
+          image: "vibe-assets/cap-sergeant.png",
+          sizes: ["OS", "Low"],
+          description: "Distressed black cap with tonal embroidered lettering and frayed brim edge.",
+          materials: ["6-panel unstructured cotton", "Pre-distressed washed finish", "Tonal embroidered wordmark", "Adjustable strapback closure", "Low profile or curved brim options"],
+        },
+        {
+          id: "red-chaos-cap",
+          name: "Red Chaos Cap",
+          price: 42,
+          category: "Cap",
+          image: "vibe-assets/cap-red-chaos.png",
+          sizes: ["OS", "Curved"],
+          description: "Black cap with red chaos graphics and aggressive metal-inspired linework.",
+          materials: ["Structured 6-panel cotton twill", "Embroidered chaos front panel", "Red undervisor", "Adjustable snapback", "Curved pre-set brim"],
+        },
+        {
+          id: "gold-dragon-cap",
+          name: "Gold Dragon Cap",
+          price: 46,
+          category: "Cap",
+          image: "vibe-assets/cap-dragon.png",
+          sizes: ["OS", "Gold"],
+          description: "Black cap with gold dragon embroidery wrapping across the crown.",
+          materials: ["Structured 6-panel black cotton", "Chain-stitch gold dragon embroidery", "Gold metal closure strap", "Unstructured crown option", "Contrast gold undervisor"],
+        },
+        {
+          id: "blackout-crest-cap",
+          name: "Blackout Crest Cap",
+          price: 40,
+          category: "Cap",
+          image: "vibe-assets/cap-blackout.png",
+          sizes: ["OS", "Tonal"],
+          description: "Tonal black distressed cap with raised crest patch and worn-in edges.",
+          materials: ["Washed cotton twill, all-black", "Raised rubber crest patch", "Distressed brim edge", "Velcro strapback", "Tonal stitching throughout"],
+        },
+        {
+          id: "crown-thorns-tee",
+          name: "Crown of Thorns Tee",
+          price: 58,
+          category: "Graphic Tee",
+          image: "vibe-assets/thorn-tee.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Black heavyweight tee with an all-over crown of thorns graphic — sharp white linework wrapping the shoulders and hem, contrast stitching throughout.",
+          materials: ["400gsm 100% heavyweight cotton", "Boxy oversized silhouette", "All-over sublimation print", "White contrast stitching on seams", "Ribbed crew neck"],
+        },
+        {
+          id: "ascension-camp-shirt",
+          name: "Ascension Camp Shirt",
+          price: 96,
+          category: "Shirts",
+          image: "vibe-assets/shirt-ascension.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "Off-white camp collar shirt with a full-body baroque ascension figure printed across the fabric. Short sleeve, open collar, button front.",
+          materials: ["100% washed linen-cotton blend", "Relaxed camp collar, short sleeve", "Full-body baroque artwork print", "Pearlescent button front closure", "Chest patch pocket"],
+        },
+        {
+          id: "tempest-camp-shirt",
+          name: "Tempest Camp Shirt",
+          price: 102,
+          category: "Shirts",
+          image: "vibe-assets/shirt-tempest.png",
+          sizes: ["S", "M", "L", "XL"],
+          description: "All-black camp collar shirt with a dramatic tempest sea scene — engraving-style etching printed edge to edge. Short sleeve, relaxed fit.",
+          materials: ["100% rayon, all-black base", "Relaxed camp collar, short sleeve", "Edge-to-edge etching artwork print", "Black button front closure", "Dropped hem, relaxed fit"],
+        },
+      ];
+
+      const reviews = [
+        { name: "Marcus O.", date: "Mar 2026", stars: 5, body: "Fit is exactly what I wanted — heavy, boxy, and the print doesn't crack after a wash. Will cop again.", verified: true },
+        { name: "Jaylen T.", date: "Feb 2026", stars: 5, body: "The scripture tee hits different in person. Took it to church, got stopped twice. Fabric is thick too, not cheap.", verified: true },
+        { name: "Nia S.", date: "Apr 2026", stars: 5, body: "Shipped fast from Toronto, arrived perfect. Sizing is true to guide — I went XL for the oversized look. Love it.", verified: true },
+        { name: "Devon P.", date: "Jan 2026", stars: 4, body: "Graphic is clean and the weight of the fabric is real. Loses one star because the tag scratches a bit, but the fit is fire.", verified: true },
+        { name: "Chris R.", date: "Mar 2026", stars: 5, body: "Different from everything else out right now. The faith direction is intentional and it reads that way on the piece.", verified: false },
+        { name: "Amara B.", date: "Apr 2026", stars: 5, body: "Packaging was clean, box had the logo, tissue paper inside. Felt premium before I even opened it.", verified: true },
+      ];
+
+      const formatter = new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+
+      const params = new URLSearchParams(window.location.search);
+      const product = products.find(p => p.id === params.get("id")) || products[0];
+      let selectedSize = product.sizes[0];
+      let saved = false;
+      const cart = JSON.parse(localStorage.getItem("top-tier-html-cart") || "[]");
+
+      // --- Populate page ---
+      document.title = `${product.name} — Top Tier`;
+      document.querySelector("[data-main-image]").src = product.image;
+      document.querySelector("[data-main-image]").alt = product.name;
+      document.querySelector("[data-category]").textContent = product.category;
+      document.querySelector("[data-name]").textContent = product.name;
+      document.querySelector("[data-name-crumb]").textContent = product.name;
+      document.querySelector("[data-category-crumb]").textContent = product.category;
+      document.querySelector("[data-price]").textContent = formatter.format(product.price);
+      document.querySelector("[data-description]").textContent = product.description;
+
+      // Materials accordion
+      const matEl = document.querySelector("[data-materials]");
+      matEl.innerHTML = `<ul>${product.materials.map(m => `<li>${m}</li>`).join("")}</ul>`;
+
+      // Thumbnails (repeat image 4x since we have one per product — in production these would be alternate angles)
+      const thumbsEl = document.getElementById("thumbs");
+      const mainImg = document.getElementById("mainImg");
+      [product.image, product.image, product.image, product.image].forEach((src, i) => {
+        const btn = document.createElement("button");
+        btn.className = "thumb" + (i === 0 ? " active" : "");
+        btn.innerHTML = `<img src="${src}" alt="${product.name} view ${i + 1}" />`;
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
+          btn.classList.add("active");
+          mainImg.src = src;
+        });
+        thumbsEl.appendChild(btn);
+      });
+
+      // Sizes
+      const chipsEl = document.getElementById("sizeChips");
+      product.sizes.forEach((size, i) => {
+        const btn = document.createElement("button");
+        btn.className = "chip" + (i === 0 ? " is-active" : "");
+        btn.textContent = size;
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".chip").forEach(c => c.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          selectedSize = size;
+        });
+        chipsEl.appendChild(btn);
+      });
+
+      // Size guide (denim uses waist sizes)
+      const isDenim = product.sizes.some(s => !isNaN(Number(s)));
+      if (isDenim) {
+        document.getElementById("sizeTable").innerHTML = `
+          <thead><tr><th>Waist</th><th>Inseam</th><th>Hip</th><th>Rise</th></tr></thead>
+          <tbody>
+            <tr><td>28</td><td>30</td><td>36</td><td>11</td></tr>
+            <tr><td>30</td><td>30</td><td>38</td><td>11.5</td></tr>
+            <tr><td>32</td><td>31</td><td>40</td><td>12</td></tr>
+            <tr><td>34</td><td>31</td><td>42</td><td>12.5</td></tr>
+          </tbody>`;
+      }
+
+      // Reviews
+      const reviewGrid = document.getElementById("reviewGrid");
+      reviews.forEach(r => {
+        reviewGrid.innerHTML += `
+          <div class="review-card">
+            <div class="review-top">
+              <span class="reviewer-name">${r.name}</span>
+              <span class="reviewer-date">${r.date}</span>
+            </div>
+            <div class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
+            <p class="review-body">${r.body}</p>
+            ${r.verified ? '<p class="review-verified">✓ Verified purchase</p>' : ""}
+          </div>`;
+      });
+
+      // Related
+      const relatedGrid = document.getElementById("relatedGrid");
+      products.filter(p => p.id !== product.id).slice(0, 4).forEach(p => {
+        relatedGrid.innerHTML += `
+          <a class="related-card" href="product.html?id=${p.id}">
+            <div class="related-card-img"><img src="${p.image}" alt="${p.name}" /></div>
+            <div class="related-card-body">
+              <div class="related-card-name">${p.name}</div>
+              <div class="related-card-price">${formatter.format(p.price)}</div>
+            </div>
+          </a>`;
+      });
+
+      // --- Cart ---
+      function cartTotal() { return cart.reduce((s, i) => s + i.price * i.qty, 0); }
+      function cartCount() { return cart.reduce((s, i) => s + i.qty, 0); }
+
+      function renderCart() {
+        const count = cartCount();
+        document.querySelectorAll("[data-cart-count]").forEach(el => el.textContent = count);
+        document.querySelector("[data-subtotal]").textContent = formatter.format(cartTotal());
+        const body = document.getElementById("cartBody");
+        if (!cart.length) {
+          body.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
+          return;
+        }
+        body.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <img class="cart-item-img" src="${item.image}" alt="${item.name}" />
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-meta">Size: ${item.size}</div>
+              <div class="cart-item-price">${formatter.format(item.price)}</div>
+              <div class="cart-qty">
+                <button class="qty-btn" data-dec="${item.key}">−</button>
+                <span class="qty-val">${item.qty}</span>
+                <button class="qty-btn" data-inc="${item.key}">+</button>
+              </div>
+            </div>
+          </div>`).join("");
+
+        document.getElementById("cartBody").addEventListener("click", (e) => {
+          const inc = e.target.closest("[data-inc]");
+          const dec = e.target.closest("[data-dec]");
+          if (!inc && !dec) return;
+          const key = inc ? inc.dataset.inc : dec.dataset.dec;
+          const item = cart.find(i => i.key === key);
+          if (!item) return;
+          item.qty += inc ? 1 : -1;
+          if (item.qty <= 0) cart.splice(cart.indexOf(item), 1);
+          localStorage.setItem("top-tier-html-cart", JSON.stringify(cart));
+          renderCart();
+        }, { once: true });
+      }
+
+      function openCart() {
+        document.getElementById("cartOverlay").classList.add("open");
+        document.getElementById("cartDrawer").classList.add("open");
+      }
+
+      function closeCart() {
+        document.getElementById("cartOverlay").classList.remove("open");
+        document.getElementById("cartDrawer").classList.remove("open");
+      }
+
+      document.getElementById("cartOpenBtn").addEventListener("click", openCart);
+      document.getElementById("cartClose").addEventListener("click", closeCart);
+      document.getElementById("cartOverlay").addEventListener("click", closeCart);
+
+      // Add to Cart
+      const atcBtn = document.getElementById("addToCartBtn");
+      atcBtn.addEventListener("click", () => {
+        const key = `${product.id}-${selectedSize}`;
+        const existing = cart.find(i => i.key === key);
+        if (existing) { existing.qty += 1; } else {
+          cart.push({ key, id: product.id, name: product.name, price: product.price, image: product.image, size: selectedSize, qty: 1 });
+        }
+        localStorage.setItem("top-tier-html-cart", JSON.stringify(cart));
+        atcBtn.textContent = "Added ✓";
+        atcBtn.classList.add("added");
+        setTimeout(() => { atcBtn.textContent = "Add to Cart"; atcBtn.classList.remove("added"); }, 1200);
+        renderCart();
+        openCart();
+      });
+
+      // Save / wishlist
+      const saveBtn = document.getElementById("saveBtn");
+      saveBtn.addEventListener("click", () => {
+        saved = !saved;
+        saveBtn.textContent = saved ? "♥" : "♡";
+        saveBtn.classList.toggle("saved", saved);
+      });
+
+      // Size guide modal
+      document.getElementById("sizeGuideBtn").addEventListener("click", () => {
+        document.getElementById("sizeModal").classList.add("open");
+      });
+      document.getElementById("sizeModalClose").addEventListener("click", () => {
+        document.getElementById("sizeModal").classList.remove("open");
+      });
+      document.getElementById("sizeModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("sizeModal")) document.getElementById("sizeModal").classList.remove("open");
+      });
+
+      // Accordion
+      document.querySelectorAll(".accordion-trigger").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".accordion-item");
+          item.classList.toggle("open");
+        });
+      });
+
+      renderCart();
+    </script>
+  </body>
+</html>
