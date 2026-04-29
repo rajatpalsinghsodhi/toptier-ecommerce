@@ -713,7 +713,8 @@
         text-transform: uppercase;
         padding: 7px 10px;
         backdrop-filter: blur(10px);
-        pointer-events: none;
+        pointer-events: auto;
+        cursor: zoom-in;
       }
 
       .zoom-overlay {
@@ -1085,7 +1086,7 @@
               <span class="badge drop">Drop 001</span>
               <span class="badge" data-badge style="display:none">Sale</span>
             </div>
-            <div class="zoom-hint">Click to zoom</div>
+            <button class="zoom-hint" id="zoomHintBtn" type="button">Click to zoom</button>
             <img data-main-image src="" alt="" id="mainImg" />
           </div>
           <div class="thumbnails" id="thumbs"></div>
@@ -1445,6 +1446,7 @@
         const btnOut = document.getElementById("zoomOutBtn");
         const btnReset = document.getElementById("zoomResetBtn");
         const btnClose = document.getElementById("zoomCloseBtn");
+        const hintBtn = document.getElementById("zoomHintBtn");
 
         let scale = 1;
         let tx = 0;
@@ -1495,6 +1497,7 @@
 
         mainImg.style.cursor = "zoom-in";
         mainImg.addEventListener("click", () => openZoom(mainImg.src, mainImg.alt));
+        hintBtn?.addEventListener("click", () => openZoom(mainImg.src, mainImg.alt));
 
         // Open from thumbnail via right-click (context menu) is annoying; instead: Alt+click opens zoom
         thumbsEl.addEventListener("click", (e) => {
@@ -1556,6 +1559,9 @@
           if (scale === 1) { scale = 2; } else { scale = 1; tx = 0; ty = 0; }
           applyTransform();
         });
+
+        // Allow external triggers if needed
+        window.__openTopTierZoom = openZoom;
       })();
 
       // Sizes
