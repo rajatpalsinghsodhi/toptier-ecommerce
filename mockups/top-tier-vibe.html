@@ -498,6 +498,26 @@
         .cd-num { font-size: 24px; }
       }
 
+      .filter-bar {
+        display: flex; gap: 2px; flex-wrap: wrap;
+        padding: 20px 0 0;
+        border-top: 1px solid rgba(242,238,231,0.10);
+      }
+
+      .filter-btn {
+        padding: 10px 22px;
+        background: transparent;
+        border: 1px solid rgba(242,238,231,0.15);
+        color: rgba(242,238,231,0.5);
+        font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase;
+        cursor: pointer;
+        transition: all .18s;
+        font-family: Rajdhani, sans-serif;
+      }
+
+      .filter-btn:hover { color: #f2eee7; border-color: rgba(242,238,231,0.4); }
+      .filter-btn.active { background: #ef1414; border-color: #ef1414; color: #fff; }
+
       .products {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
@@ -1054,8 +1074,17 @@
           </div>
         </div>
 
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="tees">Tees</button>
+          <button class="filter-btn" data-filter="bottoms">Bottoms</button>
+          <button class="filter-btn" data-filter="jackets">Jackets</button>
+          <button class="filter-btn" data-filter="caps">Caps</button>
+          <button class="filter-btn" data-filter="shirts">Shirts</button>
+        </div>
+
         <div class="products">
-          <article class="card shop-card large" data-product-card>
+          <article class="card shop-card large" data-product-card data-category="tees">
             <img class="product-image" src="vibe-assets/strength-tee.png" alt="Black graphic tee with strength within typography" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1087,7 +1116,7 @@
             </div>
           </article>
 
-          <article class="card shop-card tall" data-product-card>
+          <article class="card shop-card tall" data-product-card data-category="tees">
             <img class="product-image" src="vibe-assets/no-perfect-tee.png" alt="White graphic tee with no perfect people allowed design" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1149,7 +1178,7 @@
             </div>
           </article>
 
-          <article class="card shop-card wide" data-product-card>
+          <article class="card shop-card wide" data-product-card data-category="bottoms">
             <img class="product-image" src="vibe-assets/bottoms-red-flame.png" alt="Black wide-leg pants with red flame graphics" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1181,7 +1210,7 @@
             </div>
           </article>
 
-          <article class="card shop-card tall" data-product-card>
+          <article class="card shop-card tall" data-product-card data-category="bottoms">
             <img class="product-image" src="vibe-assets/bottoms-white-tribal.png" alt="Black pants with white tribal graphics" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1213,7 +1242,7 @@
             </div>
           </article>
 
-          <article class="card shop-card large" data-product-card>
+          <article class="card shop-card large" data-product-card data-category="bottoms">
             <img class="product-image" src="vibe-assets/bottoms-script-denim.png" alt="Washed dark pants with script typography and lightning artwork" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1245,7 +1274,7 @@
             </div>
           </article>
 
-          <article class="card shop-card large" data-product-card>
+          <article class="card shop-card large" data-product-card data-category="jackets">
             <img class="product-image" src="vibe-assets/jacket-white-flame.png" alt="White jacket with black flame graphics" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1277,7 +1306,7 @@
             </div>
           </article>
 
-          <article class="card shop-card tall" data-product-card>
+          <article class="card shop-card tall" data-product-card data-category="jackets">
             <img class="product-image" src="vibe-assets/jacket-leather-varsity.png" alt="Black and white leather varsity jacket" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1309,7 +1338,7 @@
             </div>
           </article>
 
-          <article class="card shop-card wide" data-product-card>
+          <article class="card shop-card wide" data-product-card data-category="jackets">
             <img class="product-image" src="vibe-assets/jacket-red-guard.png" alt="Black and grey jacket on red background" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1341,7 +1370,7 @@
             </div>
           </article>
 
-          <article class="card shop-card wide" data-product-card>
+          <article class="card shop-card wide" data-product-card data-category="caps">
             <img class="product-image" src="vibe-assets/cap-sergeant.png" alt="Distressed black cap with embroidered lettering" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1371,7 +1400,7 @@
             </div>
           </article>
 
-          <article class="card shop-card tall" data-product-card>
+          <article class="card shop-card tall" data-product-card data-category="caps">
             <img class="product-image" src="vibe-assets/cap-red-chaos.png" alt="Black cap with red chaos graphics" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1401,7 +1430,7 @@
             </div>
           </article>
 
-          <article class="card shop-card wide" data-product-card>
+          <article class="card shop-card wide" data-product-card data-category="caps">
             <img class="product-image" src="vibe-assets/cap-dragon.png" alt="Black cap with gold dragon embroidery" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1431,7 +1460,7 @@
             </div>
           </article>
 
-          <article class="card shop-card wide" data-product-card>
+          <article class="card shop-card wide" data-product-card data-category="caps">
             <img class="product-image" src="vibe-assets/cap-blackout.png" alt="Black distressed cap with tonal raised logo" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1461,7 +1490,7 @@
             </div>
           </article>
 
-          <article class="card shop-card large" data-product-card>
+          <article class="card shop-card large" data-product-card data-category="tees">
             <img class="product-image" src="vibe-assets/thorn-tee.png" alt="Black oversized tee with crown of thorns all-over print" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1493,7 +1522,7 @@
             </div>
           </article>
 
-          <article class="card shop-card tall" data-product-card>
+          <article class="card shop-card tall" data-product-card data-category="shirts">
             <img class="product-image" src="vibe-assets/shirt-ascension.png" alt="White button-up shirt with baroque ascension figure artwork" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1525,7 +1554,7 @@
             </div>
           </article>
 
-          <article class="card shop-card wide" data-product-card>
+          <article class="card shop-card wide" data-product-card data-category="shirts">
             <img class="product-image" src="vibe-assets/shirt-tempest.png" alt="Black button-up shirt with dark baroque tempest scene all-over print" />
             <div class="card-body commerce-body">
               <div class="product-line">
@@ -1820,6 +1849,23 @@
           }
         }
       }
+    </script>
+    <script>
+      // Category filter
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const filter = btn.dataset.filter;
+          document.querySelectorAll('.card.shop-card').forEach(card => {
+            if (filter === 'all' || card.dataset.category === filter) {
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>
